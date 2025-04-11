@@ -1,0 +1,11 @@
+VERSION = 1,
+
+option FoodGames.DailyCalories
+{
+    type = integer,
+    min = 0,
+    default = 1000,
+    max = 99999,
+    page = FoodGames,
+    translation = FoodGames_DailyCalories,
+}

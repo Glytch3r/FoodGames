@@ -1,0 +1,4 @@
+UI_EN = {
+	UI_trait_HomeLender = "HomeLender",
+	UI_trait_HomeLender_desc = "HomeLender",
+}
