@@ -1,5 +1,19 @@
+
 FoodGames = FoodGames or {}
 
+function FoodGames.initModData()
+    local player = getPlayer()
+    local playerMd = player:getModData()
+    if not playerMd['FoodGames'] then
+        playerMd['FoodGames'] = playerMd['FoodGames'] or {}
+        playerMd['FoodGames']['consumedCalories'] = playerMd['FoodGames']['consumedCalories'] or 0
+        playerMd['FoodGames']['consumedCalories'] = 0
+    end
+    playerMd['FoodGames']['Catapult'] = false
+end
+Events.OnCreatePlayer.Add(FoodGames.initModData)
+
+-----------------------            ---------------------------
 --monkey's code i only placed it on a table
 
 function FoodGames.convertDaysToYMD(days)
@@ -18,6 +32,7 @@ function FoodGames.clearFoodGamesModData()
     playerMd['FoodGames'] = playerMd['FoodGames'] or {}
     playerMd['FoodGames']['consumedCalories'] = playerMd['FoodGames']['consumedCalories'] or 0
     playerMd['FoodGames']['consumedCalories'] = 0
+    playerMd['FoodGames']['Catapult'] = false
 end
 
 function FoodGames.printFoodGames()
@@ -27,19 +42,6 @@ function FoodGames.printFoodGames()
     playerMd['FoodGames'] = playerMd['FoodGames'] or {}
     print(playerMd['FoodGames']['consumedCalories'])
 end
-
-function FoodGames.initModData()
-    local player = getPlayer()
-    local playerMd = player:getModData()
-    if not playerMd['FoodGames'] then
-        playerMd['FoodGames'] = playerMd['FoodGames'] or {}
-        playerMd['FoodGames']['consumedCalories'] = playerMd['FoodGames']['consumedCalories'] or 0
-        playerMd['FoodGames']['consumedCalories'] = 0
-    end
-    playerMd['FoodGames']['Catapult'] = false
-end
-
-Events.OnCreatePlayer.Add(FoodGames.initModData)
 
 
 

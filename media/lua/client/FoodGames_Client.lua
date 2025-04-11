@@ -36,20 +36,22 @@ Commands.FoodGames = {};
 function FoodGames.Catapult(zed, pl, bodyPartType, wpn)
     if not zed or not pl then return end
 	if not pl:HasTrait("HomeLender") then return end
-    print( pl:HasTrait("HomeLender"))
-    local isBehind = zed:getPlayerAttackPosition() == 'BEHIND' or false
-    if isBehind then
-        zed:setHitReaction("Zed_CatapultedBehind")
-        print("Zed_CatapultedBehind")
-    else
-        zed:setHitReaction("Zed_CatapultedFront")
-        print("Zed_CatapultedFront")
-    end
-    zed:setKnockedDown(true)
+	zed:setAvoidDamage(true)
+    local pos = zed:getPlayerAttackPosition()
+    local isBehind = pos == 'BEHIND' or false
     if isClient() then
-        sendClientCommand('FoodGames', 'Catapult', {zedID = zed:getOnlineID(), isBehind = isBehind})
+        sendClientCommand('FoodGames', 'Catapult', {zedID = zed:getOnlineID(), pos = zed:getPlayerAttackPosition()})
+    else
+        FoodGames.doPush(zed, isBehind)
     end
-
+    print(tostring(pos))
+    zed:addLineChatElement(tostring(pos))
+--[[     timer:Simple(3, function()
+    	zed:setAvoidDamage(false)
+        zed:changeState(ZombieOnGroundState.instance())
+        zed:setAttackedBy(getCell():getFakeZombieForHit())
+        zed:becomeCorpse()
+    end) ]]
 
 end
 Events.OnHitZombie.Remove(FoodGames.Catapult)
@@ -68,12 +70,16 @@ function FoodGames.findzedID(int)
 end
 
 Commands.FoodGames.Catapult = function(args)
-    local source = getPlayer();
-    local player = getPlayerByOnlineID(args.id)
+--[[     local source = getPlayer();
+    local player = getPlayerByOnlineID(args.id) ]]
     local zedID = args.zedID
-    local isBehind = args.isBehind
+    local isBehind = args.pos
     if type(zedID) == 'string' then zedID = tonumber(zedID) end
     local zed = FoodGames.findzedID(zedID)
+    if zed then
+        FoodGames.doPush(zed, pos)
+    end
+    --[[
 	if source ~= player then
 		if zed ~= nil then
             if isBehind then
@@ -85,7 +91,7 @@ Commands.FoodGames.Catapult = function(args)
             end
             zed:setKnockedDown(true)
 		end
-	end
+	end ]]
 end
 
 Events.OnServerCommand.Add(function(module, command, args)
@@ -94,12 +100,12 @@ Events.OnServerCommand.Add(function(module, command, args)
 	end
 end)
 
-function FoodGames.dbg(zed, isBehind)
+function FoodGames.doPush(zed, pos)
     zed = zed or dbgZed
     if not zed then return end
 
     --local isBehind = zed:getPlayerAttackPosition() == 'BEHIND' or false
-    if isBehind then
+    if pos then
         zed:setPlayerAttackPosition('BEHIND')
         zed:setHitReaction("Zed_CatapultedBehind")
         print("Zed_CatapultedBehind")
@@ -114,3 +120,4 @@ end
 FoodGames.dbg(dbgZed, true)
 FoodGames.dbg(dbgZed, false)
  ]]
+
