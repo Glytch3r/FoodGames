@@ -4,6 +4,7 @@
 	<m_AnimName>Zed_CatapultedRightFront</m_AnimName>
 	<m_SyncTrackingEnabled>true</m_SyncTrackingEnabled>
 	<m_SpeedScale>1</m_SpeedScale>
+	<m_BlendTime>0.05</m_BlendTime>
 
 	<m_Conditions>
 		<m_Name>hitreaction</m_Name>
