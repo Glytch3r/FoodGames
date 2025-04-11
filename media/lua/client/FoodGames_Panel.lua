@@ -35,7 +35,8 @@ FoodGames.panelBG_1 = getTexture("media/ui/HomeLenderPanel_1.png")
 
 function FoodGamesPanel:update()
     ISCollapsableWindow.update(self)
-    local Catapult = self.player:getModData()['FoodGames']['Catapult']
+
+    --[[ local Catapult = self.player:getModData()['FoodGames']['Catapult']
     local bg = FoodGames.panelBG_0
     if Catapult then
         bg = FoodGames.panelBG_1
@@ -43,6 +44,7 @@ function FoodGamesPanel:update()
     if self.bg:getImage() ~= bg then
         self.bg:setImage(bg)
     end
+     ]]
 end
 
 
@@ -91,28 +93,24 @@ function FoodGamesPanel:createChildren()
     self:setTitle("Food Game Calories");
 
     local data = self.player:getModData()['FoodGames'] and self.player:getModData()['FoodGames']['consumedCalories'] or 0
-
+--[[
     self.bg = ISImage:new(0, 0, self.width, self.height, FoodGamesPanel.panelBG_0)
     self.bg.scaled = false
     self:addChild(self.bg)
+ ]]
 
 
     self.icon = ISImage:new(10, 25, 32, 32, getTexture("media/ui/HomeLenderIcon.png"));
     self.icon.scaled = true;
     self:addChild(self.icon);
 
+
+
     self.CalSlider = ISSliderPanel:new(10, self.height / 4 + 32, 250, 32, self, self.OnSliderChange)
     self.CalSlider.anchorTop = false
     self.CalSlider.anchorBottom = true
     self.CalSlider:initialise()
     self.CalSlider:instantiate()
-
-    self.progressBar = ISUIProgressBar:new(40, 100, 180, 20)
-    self.progressBar:setMax(8)
-    self.progressBar:setValue(data)
-    self:addChild(self.progressBar)
-
-
     self.CalSlider:setValues(0.0, 99999, 0.1, 1, true)
     self.CalSlider:setHeight(32)
     self:addChild(self.CalSlider)

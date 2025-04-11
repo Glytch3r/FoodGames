@@ -31,11 +31,15 @@ end
 function FoodGames.initModData()
     local player = getPlayer()
     local playerMd = player:getModData()
-    if not  playerMd['FoodGames'] then
+    if not playerMd['FoodGames'] then
         playerMd['FoodGames'] = playerMd['FoodGames'] or {}
         playerMd['FoodGames']['consumedCalories'] = playerMd['FoodGames']['consumedCalories'] or 0
         playerMd['FoodGames']['consumedCalories'] = 0
     end
+    playerMd['FoodGames']['Catapult'] = false
 end
 
 Events.OnCreatePlayer.Add(FoodGames.initModData)
+
+
+
