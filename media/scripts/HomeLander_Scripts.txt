@@ -1,0 +1,16 @@
+
+
+module Base
+{
+    sound HomeLander_ToggleOff
+    {
+        category = UI,
+        clip { file = media/sound/HomeLander_ToggleOff.ogg,   distanceMax = 1500, is3D = true, volume = 0.40, }
+    }
+
+    sound HomeLander_ToggleOn
+    {
+        category = UI,
+        clip { file = media/sound/HomeLander_ToggleOn.ogg,   distanceMax = 1500, is3D = true, volume = 0.40, }
+    }
+}

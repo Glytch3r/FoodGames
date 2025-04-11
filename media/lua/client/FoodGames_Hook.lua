@@ -36,11 +36,11 @@ FoodGames = FoodGames or {}
 
 function FoodGames.init()
     local hook_start = ISEatFoodAction.start
-
-
-
     function ISEatFoodAction:start()
         hook_start(self)
+        if not self.character:HasTrait("HomeLender") then
+            return
+        end
         self.originalCalories = self.item:getCalories()
         self.character:reportEvent("EventEating")
     end
@@ -49,6 +49,9 @@ function FoodGames.init()
     local hook_stop = ISEatFoodAction.stop
     function ISEatFoodAction:stop()
         hook_stop(self)
+        if not self.character:HasTrait("HomeLender") then
+            return
+        end
         if self.item and self.item:getFullType() ~= "Base.Cigarettes" and self.character:getInventory():contains(self.item) then
             self:handleFoodGamesCaloriesAfterEat(false)
         end
@@ -56,11 +59,17 @@ function FoodGames.init()
 
     local hook_perform = ISEatFoodAction.perform
     function ISEatFoodAction:perform()
+        if not self.character:HasTrait("HomeLender") then
+            return hook_perform(self)
+        end
         self:handleFoodGamesCaloriesAfterEat(true)
         return hook_perform(self)
     end
 
     function ISEatFoodAction:handleFoodGamesCaloriesAfterEat(isPerform)
+        if not self.character:HasTrait("HomeLender") then
+            return
+        end
         self.remainingCalories = self.item:getCalories()
         local dbg = getCore():getDebug()
         if dbg then
@@ -124,5 +133,5 @@ function FoodGames.init()
 end
 
 Events.OnCreatePlayer.Add(FoodGames.init)
-
+-- FoodGames.init()
 -----------------------            ---------------------------
