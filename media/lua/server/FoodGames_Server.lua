@@ -40,7 +40,7 @@ Commands.FoodGames = {};
 
 Commands.FoodGames.Catapult = function(player, args)
     local playerId = player:getOnlineID();
-    sendServerCommand('FoodGames', 'Catapult', {id = playerId, zedID = args.zedID, isBehind = args.isBehind})
+    sendServerCommand('FoodGames', 'Catapult', {id = playerId, zedID = args.zedID, pos = args.pos})
 end
 
 Events.OnClientCommand.Add(function(module, command, player, args)

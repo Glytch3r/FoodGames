@@ -9,3 +9,9 @@ option FoodGames.DailyCalories
     page = FoodGames,
     translation = FoodGames_DailyCalories,
 }
+
+option FoodGames.ShoveKills
+{
+	type = boolean, default = true,
+	page = FoodGames, translation = FoodGames_ShoveKills,
+}
