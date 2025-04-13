@@ -62,6 +62,11 @@ function FoodGames.init()
         if not self.character:HasTrait("HomeLender") then
             return hook_perform(self)
         end
+        if self.item:getFullType() == "Base.ZeeVeeMutagen" then
+            self.character:setHaloNote(tostring("Became Dizzy"),250,0,0,500)
+               local dur = SandboxVars.FoodGames.QueezyDuration or 5
+                self.character:getModData()['QueezyHr'] = tonumber(dur)
+        end
         self:handleFoodGamesCaloriesAfterEat(true)
         return hook_perform(self)
     end
