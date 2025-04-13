@@ -25,6 +25,8 @@
    ░▒▓█████▓▒░     ░▒▓█▓▒░        ░▒▓█▓▒░░▒▓█▓▒░  ░▒▓███████▓▒░   ░▒▓██████▓▒░   ░▒▓█▓▒░ ░▒▓█▓▒░  ░▒▓███████▓▒░    ░▒▓███████▓▒░
 █████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████--]]
 
+Recipe = Recipe or {}
+Recipe.OnCreate = Recipe.OnCreate or {}
 
 -----------------------            ---------------------------
 FoodGames = FoodGames or {}
@@ -39,7 +41,7 @@ end
 
 Events.OnZombieDead.Add(FoodGames.ZedItemDropHandler);
 
-function Recipesa.OnCreate.ZVMutagen(items, result, player)
+function Recipe.OnCreate.ZVMutagen(items, result, player)
    local dur = SandboxVars.FoodGames.QueezyDuration
    player:getModData()['QueezyHr'] = tonumber(dur)
 end
