@@ -32,11 +32,9 @@ Recipe.OnCreate = Recipe.OnCreate or {}
 FoodGames = FoodGames or {}
 
 function FoodGames.ZedItemDropHandler()
-      local qty =  SandboxVars.FoodGames.MaxZedDrops or 5
-      local inv = zed:getInventory();
-      inv:AddItems("Base.ZeeVeeMutagen",  ZombRand(0, qty + 1))
-
-    end
+   local qty =  SandboxVars.FoodGames.MaxZedDrops or 5
+   local inv = zed:getInventory();
+   inv:AddItems("Base.ZeeVeeMutagen",  ZombRand(0, qty + 1))
 end
 
 Events.OnZombieDead.Add(FoodGames.ZedItemDropHandler);
