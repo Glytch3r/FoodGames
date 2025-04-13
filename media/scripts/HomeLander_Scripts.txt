@@ -47,6 +47,14 @@ module Base
 	}
 
 
+	recipe Zee Vee Mutagen
+	{
+	   ZeeVeeDNA=100,
+	   Result:ZeeVeeMutagen,
+	   Time:80.0,
+	   Category:Cooking,
+	   OnGiveXP:Recipe.OnGiveXP.None,
+	}
 
     /* -----------------------            --------------------------- */
 

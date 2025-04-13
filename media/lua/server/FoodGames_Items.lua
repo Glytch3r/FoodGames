@@ -40,8 +40,9 @@ function FoodGames.ZedItemDropHandler()
 end
 
 Events.OnZombieDead.Add(FoodGames.ZedItemDropHandler);
-
+--[[
 function Recipe.OnCreate.ZVMutagen(items, result, player)
    local dur = SandboxVars.FoodGames.QueezyDuration
    player:getModData()['QueezyHr'] = tonumber(dur)
 end
+ ]]
