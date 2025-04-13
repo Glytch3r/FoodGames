@@ -3,7 +3,7 @@ require "NPCs/MainCreationMethods"
 
 Events.OnGameBoot.Add(function()
 	local traitStr = "HomeLender"
-	TraitFactory.addTrait(traitStr, getText("UI_trait_"..traitStr), 10, getText("UI_trait_"..traitStr.."_desc"), true)
+	TraitFactory.addTrait(traitStr, getText("UI_trait_"..traitStr), 15, getText("UI_trait_"..traitStr.."_desc"), false)
 	TraitFactory.sortList()
 	local traits = TraitFactory.getTraits()
 	for i=0, traits:size()-1 do
