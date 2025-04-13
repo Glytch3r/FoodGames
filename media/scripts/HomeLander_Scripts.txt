@@ -2,6 +2,54 @@
 
 module Base
 {
+
+
+
+	item ZeeVeeMutagen
+	{
+		DisplayName = Zee-Vee Mutagen,
+		DisplayCategory = Food,
+		Type = Food,
+		Weight = 0.3,
+		Icon = ZeeVeeMutagen,
+		FoodType = Beer,
+		Alcoholic = TRUE,
+		CantBeFrozen = TRUE,
+		EatType = popcan,
+		Packaged = TRUE,
+		ReplaceOnUse = BeerCanEmpty,
+		HungerChange = -8,
+		ThirstChange = -13,
+		UnhappyChange = -15,
+		Calories = 4000,
+		Carbohydrates = 39,
+		Lipids = 0,
+		Proteins = 0,
+		CustomContextMenu = Drink,
+		CustomEatSound = DrinkingFromCan,
+		StaticModel = BeerCan,
+		WorldStaticModel = BeerCan_Ground,
+		Tags = LowAlcohol,
+
+
+	}
+
+
+
+	item ZeeVeeDNA
+	{
+		DisplayName	=	Zee-Vee DNA,
+	    DisplayCategory = Material,
+		Weight	=	0.1,
+		Type	=	Normal,
+		Icon	=	ZeeVeeDNA,
+		/* WorldStaticModel = DoorHinge, */
+	}
+
+
+
+    /* -----------------------            --------------------------- */
+
     sound HomeLander_ToggleOff
     {
         category = UI,

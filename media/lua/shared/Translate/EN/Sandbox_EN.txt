@@ -2,7 +2,14 @@ Sandbox_EN = {
     Sandbox_FoodGames = "Food Games",
 
     Sandbox_FoodGames_DailyCalories = "Daily Calories",
-    Sandbox_FoodGames_DailyCalories_tooltip = "The daily set amount of calories a player would need to get a reward.",
+    Sandbox_FoodGames_DailyCalories_tooltip = "The daily set amount of calories a player would need to get a reward",
+
     Sandbox_FoodGames_ShoveKills = "Shove Kills",
     Sandbox_FoodGames_ShoveKills_tooltip = "Super Shove By HomeLender Instantly Kills Zombies",
-}
+
+    Sandbox_FoodGames_MaxZedDrops = "Max Zed Drops",
+    Sandbox_FoodGames_MaxZedDrops_tooltip = "Max number of possible Zee-Vee DNA Dropped by Zombies. Set to 0 to disable feature",
+
+    Sandbox_FoodGames_QueezyDuration = "Zee-Vee Dizzy Duration",
+    Sandbox_FoodGames_QueezyDuration_tooltip = "Zee-Vee Mutagen Queezy Duration (in game hours)",
+
