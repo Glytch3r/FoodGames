@@ -74,6 +74,10 @@ function FoodGamesPanel:OnBtnPress(btn, key, mode, toggleOnSound, toggleOffSound
 
     local sound = (fgData['Mode'] == mode) and toggleOnSound or toggleOffSound
     getSoundManager():playUISound(sound)
+
+    if fgData['Mode'] == "Wolferine" then
+        FoodGames.doHealRandPart(self.player)
+    end
 end
 -----------------------            ---------------------------
 
