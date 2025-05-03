@@ -43,8 +43,9 @@ function FoodGames.Catapult(zed, pl, bodyPartType, wpn)
     if not zed or not pl then return end
 	if not pl:HasTrait("HomeLender") then return end
     local md = pl:getModData()
-	if md['FoodGames']['Catapult'] then
-        if not md['FoodGames']['consumedCalories'] or md['FoodGames']['consumedCalories'] < 2000 then return end
+    local consume = SandboxVars.FoodGames.CalConsume  or 500
+	if md['FoodGames']['Mode'] == "HomeLender" then
+        if not md['FoodGames']['consumedCalories'] or md['FoodGames']['consumedCalories'] < consume then return end
 
         zed:setAvoidDamage(true)
         local pos = zed:getPlayerAttackPosition()
@@ -54,7 +55,7 @@ function FoodGames.Catapult(zed, pl, bodyPartType, wpn)
         else
             FoodGames.doPush(zed, pos)
 
-            md['FoodGames']['consumedCalories'] = md['FoodGames']['consumedCalories'] - 2000
+            md['FoodGames']['consumedCalories'] = md['FoodGames']['consumedCalories'] - consume
         end
         if getCore():getDebug()then
             print(tostring(pos))
@@ -74,7 +75,7 @@ function FoodGames.Catapult(zed, pl, bodyPartType, wpn)
                 zed:becomeCorpse()
             end)
         end
-        md['FoodGames']['Catapult'] = handleFoodGamesCaloriesAfterEat
+        --md['FoodGames']['Catapult'] = false
     end
 end
 Events.OnHitZombie.Remove(FoodGames.Catapult)

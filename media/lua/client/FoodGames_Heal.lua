@@ -25,121 +25,49 @@
    ░▒▓█████▓▒░     ░▒▓█▓▒░        ░▒▓█▓▒░░▒▓█▓▒░  ░▒▓███████▓▒░   ░▒▓██████▓▒░   ░▒▓█▓▒░ ░▒▓█▓▒░  ░▒▓███████▓▒░    ░▒▓███████▓▒░
 █████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████--]]
 
-
--- coded by Monkey
--- refactored by Glytch3r to prevent possible mod conflict due to vanilla overwrite
-
-
------------------------            ---------------------------
 FoodGames = FoodGames or {}
 
+function FoodGames.doHealRandPart(pl)
+    pl = pl or getPlayer()
 
-function FoodGames.init()
-    local hook_start = ISEatFoodAction.start
-    function ISEatFoodAction:start()
-        hook_start(self)
-        if not FoodGames.isHero(self.character) then
-            return
-        end
-        self.originalCalories = self.item:getCalories()
-        self.character:reportEvent("EventEating")
+    if not pl:HasTrait("Wolferine") then return end
+    local consume = SandboxVars.FoodGames.CalConsume  or 500
+    local md = pl:getModData()
+	if md['FoodGames']['Mode'] ~= "Wolferine" then
+        return
+    end
+    if not md['FoodGames']['consumedCalories'] or md['FoodGames']['consumedCalories'] < consume then
+        return
     end
 
 
-    local hook_stop = ISEatFoodAction.stop
-    function ISEatFoodAction:stop()
-        hook_stop(self)
-        if not FoodGames.isHero(self.character) then
-            return
-        end
-        if self.item and self.item:getFullType() ~= "Base.Cigarettes" and self.character:getInventory():contains(self.item) then
-            self:handleFoodGamesCaloriesAfterEat(false)
+    local bodyDamage = pl:getBodyDamage()
+    local healable = {}
+
+    local function addHealable(part, label, func)
+        table.insert(healable, {part=part, label=label, func=func})
+    end
+
+    for i = 0, BodyPartType.ToIndex(BodyPartType.MAX) - 1 do
+        local part = bodyDamage:getBodyPart(BodyPartType.FromIndex(i))
+        if part:HasInjury() then
+            if part:IsScratched()       then addHealable(part, "Scratched",       function(p) p:SetScratched(false) end) end
+            if part:IsCut()             then addHealable(part, "Cut",             function(p) p:SetCut(false) end) end
+            if part:IsDeepWounded()     then addHealable(part, "DeepWounded",     function(p) p:SetDeepWounded(false) end) end
+            if part:IsBitten()          then addHealable(part, "Bitten",          function(p) p:SetBitten(false) end) end
+            if part:IsBleeding()        then addHealable(part, "Bleeding",        function(p) p:SetBleeding(false) end) end
+            if part:IsInfected()        then addHealable(part, "Infected",        function(p) p:setInfected(false) end) end
+            if part:IsInfectedWound()   then addHealable(part, "InfectedWound",   function(p) p:setInfectedWound(false) end) end
+            if part:IsBurned()          then addHealable(part, "Burned",          function(p) p:SetBurned(false) end) end
+            if part:HasFracture()       then addHealable(part, "Fracture",        function(p) p:setFractureTime(0.0) end) end
         end
     end
 
-    local hook_perform = ISEatFoodAction.perform
-    function ISEatFoodAction:perform()
-        --if not self.character:HasTrait("HomeLender") then
-        if not FoodGames.isHero(self.character) then
-            return hook_perform(self)
-        end
-
-        if self.item:getFullType() == "Base.ZeeVeeMutagen" then
-            self.character:setHaloNote(tostring("Became Dizzy"),250,0,0,500)
-            local dur = SandboxVars.FoodGames.QueezyDuration or 5
-            self.character:getModData()['QueezyHr'] = tonumber(dur)
-        end
-        self:handleFoodGamesCaloriesAfterEat(true)
-        return hook_perform(self)
-    end
-
-    function ISEatFoodAction:handleFoodGamesCaloriesAfterEat(isPerform)
-        --if not self.character:HasTrait("HomeLender") then
-        if not FoodGames.isHero(self.character) then
-            return
-        end
-        self.remainingCalories = self.item:getCalories()
-        local dbg = getCore():getDebug()
-        if dbg then
-            print('----------[FoodGames]----------')
-            print('[FoodGames] Percentage: ' .. self.percentage)
-            print('[FoodGames] Initial Calories: ' .. self.originalCalories)
-            print('[FoodGames] Remaining Calories: ' .. self.remainingCalories)
-        end
-
-        local consumedCalories = self.originalCalories - self.remainingCalories
-        if isPerform then
-            consumedCalories = self.originalCalories
-        end
-
-        local playerMd = self.character:getModData()
-        playerMd['FoodGames'] = playerMd['FoodGames'] or {}
-        playerMd['FoodGames']['consumedCalories'] = playerMd['FoodGames']['consumedCalories'] or 0
-        local consumedCaloriesSnapshot = playerMd['FoodGames']['consumedCalories']
-        local daysOfCaloriesSnapshot = math.floor(consumedCaloriesSnapshot / SandboxVars.FoodGames.DailyCalories)
-        playerMd['FoodGames']['consumedCalories'] = playerMd['FoodGames']['consumedCalories'] + consumedCalories
-        local newDaysOfCalories = math.floor(playerMd['FoodGames']['consumedCalories'] / SandboxVars.FoodGames.DailyCalories)
-        local daysChange = newDaysOfCalories - daysOfCaloriesSnapshot
-
-        if dbg then
-            print('----------[FoodGames]----------')
-            print('Consumed Calories: ' .. consumedCalories)
-            print('daysOfCaloriesSnapshot: ' .. daysOfCaloriesSnapshot)
-            print('newDaysOfCalories: ' .. newDaysOfCalories)
-            print('Player Consumed Calories: ' .. playerMd['FoodGames']['consumedCalories'])
-            print("Days Change: " .. daysChange)
-        end
-
-        if daysChange <= 0 then
-            self.character:setHaloNote('Calories Stored: ' .. FoodGames.convertDaysToYMD(newDaysOfCalories))
-            return
-        end
-
-        local item = InventoryItemFactory.CreateItem("Base.ChessWhite")
-        local inventory = self.character:getInventory()
-        if inventory then
-            inventory:DoAddItem(item)
-            inventory:setDrawDirty(true)
-        end
-        self.character:getInventory():setDrawDirty(true)
-        ISInventoryPage.dirtyUI()
-        self.character:setHaloNote(getText("You have gained another day's food token! Calories Stored: ") .. FoodGames.convertDaysToYMD(newDaysOfCalories))
-    end
-
-    local hook_new = ISEatFoodAction.new
-    function ISEatFoodAction:new(character, item, percentage)
-        local o = hook_new(self, character, item, percentage)
-        o.originalCalories = 0
-        o.remainingCalories = 0
-        return o
-    end
-
-    -----------------------            ---------------------------
+    if #healable == 0 then return end
 
 
-
+    local injury = healable[ZombRand(#healable) + 1]
+    injury.func(injury.part)
+    md['FoodGames']['consumedCalories'] = md['FoodGames']['consumedCalories'] - consume
+    print(string.format("[FoodGames] Healed %s on %s", injury.label, tostring(injury.part:getType())))
 end
-
-Events.OnCreatePlayer.Add(FoodGames.init)
--- FoodGames.init()
------------------------            ---------------------------

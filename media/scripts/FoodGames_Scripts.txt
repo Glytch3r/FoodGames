@@ -69,4 +69,16 @@ module Base
         category = UI,
         clip { file = media/sound/HomeLander_ToggleOn.ogg,   distanceMax = 1500, is3D = true, volume = 0.40, }
     }
+
+	sound Wolferine_ToggleOff
+    {
+        category = UI,
+        clip { file = media/sound/Wolferine_ToggleOff.ogg,   distanceMax = 1500, is3D = true, volume = 0.40, }
+    }
+
+    sound Wolferine_ToggleOn
+    {
+        category = UI,
+        clip { file = media/sound/Wolferine_ToggleOn.ogg,   distanceMax = 1500, is3D = true, volume = 0.40, }
+    }
 }

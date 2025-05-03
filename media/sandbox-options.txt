@@ -26,3 +26,10 @@ option FoodGames.QueezyDuration
 	type = integer, min = 0, max = 2688, default = 5,
 	page = FoodGames, translation = FoodGames_QueezyDuration,
 }
+
+option FoodGames.CalConsume
+{
+    type = double, min = 0, max = 2000, default = 500,
+	page = FoodGames, translation = FoodGames_CalConsume,
+}
+
