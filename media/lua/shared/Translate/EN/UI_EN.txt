@@ -1,4 +1,6 @@
 UI_EN = {
 	UI_trait_HomeLender = "HomeLender",
 	UI_trait_HomeLender_desc = "HomeLender",
+	UI_trait_Wolferine = "Wolferine",
+	UI_trait_Wolferine_desc = "Wolferine",
 }
