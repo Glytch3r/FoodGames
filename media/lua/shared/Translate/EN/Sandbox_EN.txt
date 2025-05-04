@@ -15,3 +15,7 @@ Sandbox_EN = {
 
     Sandbox_FoodGames_CaloriesConsume = "Calories Consume",
     Sandbox_FoodGames_CaloriesConsume_tooltip = "Amount of Calories Consumed for skill usage",
+
+    Sandbox_FoodGames_InjuryHealOverheadMessage = "Injury Heal Overhead Message",
+    Sandbox_FoodGames_InjuryHealOverheadMessage_tooltip = "Displays an overhead message indicating the type of injury healed and the affected body part",
+

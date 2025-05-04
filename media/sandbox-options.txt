@@ -33,3 +33,10 @@ option FoodGames.CalConsume
 	page = FoodGames, translation = FoodGames_CalConsume,
 }
 
+option FoodGames.InjuryHealOverheadMessage
+{
+    	type = boolean, default = true,
+
+	page = FoodGames, translation = FoodGames_InjuryHealOverheadMessage,
+}
+
