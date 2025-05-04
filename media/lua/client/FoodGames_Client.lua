@@ -45,7 +45,10 @@ function FoodGames.Catapult(zed, pl, bodyPartType, wpn)
     local md = pl:getModData()
     local consume = SandboxVars.FoodGames.CalConsume  or 500
 	if md['FoodGames']['Mode'] == "HomeLender" then
-        if not md['FoodGames']['consumedCalories'] or md['FoodGames']['consumedCalories'] < consume then return end
+        if not md['FoodGames']['consumedCalories'] or md['FoodGames']['consumedCalories'] < consume then
+            FoodGames.checkCaloriesAndDisable(pl)
+            return
+        end
 
         zed:setAvoidDamage(true)
         local pos = zed:getPlayerAttackPosition()
@@ -56,6 +59,7 @@ function FoodGames.Catapult(zed, pl, bodyPartType, wpn)
             FoodGames.doPush(zed, pos)
 
             md['FoodGames']['consumedCalories'] = md['FoodGames']['consumedCalories'] - consume
+            FoodGames.checkCaloriesAndDisable(pl)
         end
         if getCore():getDebug()then
             print(tostring(pos))

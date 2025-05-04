@@ -15,6 +15,19 @@ end
 
 Events.OnCreatePlayer.Add(FoodGames.initModData)
 
+function FoodGames.checkCaloriesAndDisable(pl)
+    pl = pl or getPlayer()
+    local md = pl:getModData()
+    local cal = md.FoodGames and md.FoodGames.consumedCalories or 0
+    local threshold = SandboxVars.FoodGames.CalConsume or 500
+    local cost = threshold -- just incase in the future we change each skill cost
+    if md.FoodGames and md.FoodGames.Mode ~= "off" then
+        if cal - cost < threshold then
+            md.FoodGames.Mode = 'off'
+        end
+    end
+end
+
 function FoodGames.getMode(pl)
     pl = pl or getPlayer()
     if not pl then return "off" end

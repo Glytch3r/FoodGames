@@ -173,6 +173,7 @@ function FoodGamesPanel:onMouseMoveOutside(dx, dy)
 end
 
 function FoodGamesPanel:onMouseUp(x,y)
+    FoodGames.checkCaloriesAndDisable(self.player)
 	if self.onclick then
 		self.onclick(self.target, self);
 	end

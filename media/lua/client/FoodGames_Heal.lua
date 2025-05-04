@@ -43,6 +43,7 @@ function FoodGames.doHealRandPart(pl)
 
     if FoodGames.HealRandPart(pl) then
         md.FoodGames.consumedCalories = md.FoodGames.consumedCalories - consume
+        FoodGames.checkCaloriesAndDisable(pl)
     end
 end
 
@@ -155,7 +156,6 @@ function FoodGames.HealRandPart(pl)
                 end
             })
         end
-
 
 
 
