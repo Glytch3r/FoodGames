@@ -36,13 +36,13 @@ function FoodGames.doHealRandPart(pl)
     local md = pl:getModData()
 
     md.FoodGames = md.FoodGames or {}
-    md.FoodGames.consumedCalories = md.FoodGames.consumedCalories or 0
+    md.FoodGames.ConsumedCalories = md.FoodGames.ConsumedCalories or 0
 
     if md.FoodGames.Mode ~= "Wolferine" then return end
-    if md.FoodGames.consumedCalories < consume then return end
+    if md.FoodGames.ConsumedCalories < consume then return end
 
     if FoodGames.HealRandPart(pl) then
-        md.FoodGames.consumedCalories = md.FoodGames.consumedCalories - consume
+        md.FoodGames.ConsumedCalories = md.FoodGames.ConsumedCalories - consume
         FoodGames.checkCaloriesAndDisable(pl)
     end
 end

@@ -1,3 +1,4 @@
+
 VERSION = 1,
 
 option FoodGames.DailyCalories
@@ -35,8 +36,90 @@ option FoodGames.CalConsume
 
 option FoodGames.InjuryHealOverheadMessage
 {
-    	type = boolean, default = true,
-
+    type = boolean, default = true,
 	page = FoodGames, translation = FoodGames_InjuryHealOverheadMessage,
+}
+
+
+option FoodGames.MetalValues
+{
+    type = string, default = Base.PaintbucketEmpty:25;Base.SpearBreadKnife:5;Base.SpearButterKnife:5;Base.SpearFork:5;Base.SpearLetterOpener:5;Base.SpearScalpel:5;Base.SpearSpoon:5;Base.SpearScissors:5;Base.SpearHandFork:5;Base.SpearScrewdriver:5;Base.SpearHuntingKnife:5;Base.SpearMachete:5;Base.SpearIcePick:5;Base.SpearKnife:5;Base.ClosedUmbrellaBlue:5;Base.ClosedUmbrellaRed:5;Base.ClosedUmbrellaBlack:5;Base.ClosedUmbrellaWhite:5;Base.GardenFork:5;Base.WaterPaintbucket:5;Base.DogfoodOpen:8;Base.Dogfood:8;Base.CannedCornedBeefOpen:8;Base.CannedChiliOpen:8;Base.CannedBologneseOpen:8;Base.CannedCarrotsOpen:8;Base.CannedMushroomSoupOpen:8;Base.CannedPeasOpen:8;Base.CannedPotatoOpen:8;Base.CannedSardinesOpen:8;Base.CannedTomatoOpen:8;Base.CannedCorn:8;Base.CannedMushroomSoup:8;Base.CannedPeas:8;Base.CannedPotato2:8;Base.CannedSardines:8;Base.CannedTomato2:8;Base.CannedCarrots2:8;Base.CannedChili:8;Base.CannedBolognese:8;Base.CannedCornedBeef:8;Base.TinnedSoupOpen:8;Base.TinnedSoup:8;Base.TunaTinOpen:8;Base.OpenBeans:8;Base.TinnedBeans:8;Base.TunaTin:8;Base.CannedFruitCocktail:8;Base.CannedFruitCocktailOpen:8;Base.CannedFruitBeverage:8;Base.CannedFruitBeverageOpen:8;Base.CannedPeaches:8;Base.CannedPeachesOpen:8;Base.CannedPineapple:8;Base.CannedPineappleOpen:8;Base.CannedMilk:8;Base.CannedMilkOpen:8;Base.WaterSaucepan:8;Base.WaterPot:8;Base.WaterPotRice:8;Base.WaterPotPasta:8;Base.WaterSaucepanRice:8;Base.WaterSaucepanPasta:8;Base.PotOfSoup:8;Base.PotOfSoupRecipe:8;Base.PotOfStew:8;Base.Pop:8;Base.Pop2:8;Base.Pop3:8;Base.BeerCan:8;Base.OmeletteRecipe:8;Base.BakingTray_Muffin:8;Base.BakingTray_Muffin_Recipe:8;Base.Muffintray_Biscuit:8;Base.PastaPot:8;Base.RicePot:8;Base.PiePrep:8;Base.CakePrep:8;Base.GriddlePanFriedVegetables:8;Base.OatsRaw:8;Base.PieWholeRaw:8;Base.PieWholeRawSweet:8;Base.CakeRaw:8;Base.PanFriedVegetables:8;Base.PanFriedVegetables2:8;Base.RicePan:8;Base.PastaPan:8;farming.HandShovel:6;farming.WateredCan:18;farming.WateredCanFull:18;Base.UnusableMetal:5;Base.HomeAlarm:3;Base.Hairspray:2;Base.Mov_AntiqueStove:20;Base.Mov_Microwave:20;Base.Mov_Microwave2:20;Base.Mov_Toaster:20;Base.EmptyPetrolCan:5;Base.Camera:5;Base.CameraExpensive:5;Base.KitchenTongs:5;Base.Staples:1;Base.Stapler:3;Base.HolePuncher:4;Base.Mov_FoldingChair:12;Base.Mov_OfficeChair:4;Base.Mov_GreyChair:4;Base.Mov_MetalStool:12;Base.Mov_MetalLocker:30;Base.Mov_RedBBQ:30;Base.Mov_GreyOven:12;Base.Mov_ModernOven:12;Base.Mov_GreenOven:12;Base.Mov_RedOven:12;Base.Mov_CoffeeMaker:7;Base.Mov_Espresso:9;Base.Mov_Projector:10;Base.Mov_FridgeMini:16;Base.Mov_TowelDispenser:12;Base.Mov_AirConditioner:12;Base.Mov_SatelliteDish:67;Base.Mov_PopcornMachine:9;Base.Mov_ShoppingBaskets:5;Base.Mov_SodaMachine:32;Base.Mov_NapkinDispenser:18;Base.Mov_FitnessContraption:12;Base.Mov_SignArmy:6;Base.Mov_CabinetTool:12;Base.Mov_LightConstruction:12;Base.Mov_ConcreteMixer:12;Base.Mov_PinballMachine:20;Base.Mov_ArcadeMachine1:12;Base.Mov_ArcadeMachine2:12;Base.Mov_TVCamera:20;Base.Mov_Microphone:20;Base.Mov_SignRestricted:8;Base.Mov_WaterDispenser:23;Base.Mov_SignWarning:7;Base.BucketConcreteFull:7;Base.BucketPlasterFull:7;Base.BucketWaterFull:7;Base.BeerEmpty:1;Base.FullKettle:20;Base.Lighter:5;Base.PetrolCan:31;Base.PropaneTank:41;Base.ElectricWire:5;Radio.ScannerModule:10;Radio.RadioTransmitter:5;Radio.RadioRed:6;Radio.RadioBlack:6;Radio.RadioMakeShift:5;Radio.CDplayer:2;Base.Katana:20;Radio.HamRadioMakeShift:32;Radio.TvAntique:34;Radio.TvWideScreen:20;Radio.TvBlack:25;Radio.WalkieTalkie1:34;Radio.WalkieTalkie2:20;Radio.WalkieTalkie3:25;Radio.WalkieTalkie4:34;Radio.WalkieTalkie5:20;Radio.WalkieTalkieMakeShift:25;Radio.HamRadio1:34;Radio.HamRadio2:20,
+    page = FoodGames, translation = FoodGames_MetalValues,
+}
+
+option FoodGames.MetalValueMultiplier
+{
+    type = double, min = 0.00, max = 100, default = 0.5,
+    page = FoodGames, translation = FoodGames_MetalValueMultiplier,
+}
+option FoodGames.MetalWeightMultiplier
+{
+    type = double, min = 0.00, max = 100, default = 3.5,
+    page = FoodGames, translation = FoodGames_MetalWeightMultiplier,
+}
+option FoodGames.MaxMetalCapacity
+{
+    type = double, min = 0.00, max = 999999, default = 46080,
+    page = FoodGames, translation = FoodGames_MaxMetalCapacity,
+}
+
+option FoodGames.SkillCost1
+{
+    type = integer, min = 0, max = 999, default = 24,
+    page = FoodGames, translation = FoodGames_SkillCost1,
+}
+
+option FoodGames.MinZedDmg1
+{
+    type = integer, min = 0, max = 999, default = 4,
+    page = FoodGames, translation = FoodGames_MinZedDmg1,
+}
+
+option FoodGames.MaxZedDmg1
+{
+    type = integer, min = 0, max = 999, default = 40,
+    page = FoodGames, translation = FoodGames_MaxZedDmg1,
+}
+
+option FoodGames.SkillRadius1
+{
+    type = integer, min = 0, max = 100, default = 4,
+    page = FoodGames, translation = FoodGames_SkillRadius1,
+}
+
+option FoodGames.MaxHitCount1
+{
+    type = integer, min = 0, max = 100, default = 1,
+    page = FoodGames, translation = FoodGames_MaxHitCount1,
+}
+
+option FoodGames.SkillCost2
+{
+    type = integer, min = 0, max = 999, default = 64,
+    page = FoodGames, translation = FoodGames_SkillCost2,
+}
+
+option FoodGames.MinZedDmg2
+{
+    type = integer, min = 0, max = 999, default = 4,
+    page = FoodGames, translation = FoodGames_MinZedDmg2,
+}
+
+option FoodGames.MaxZedDmg2
+{
+    type = integer, min = 0, max = 999, default = 40,
+    page = FoodGames, translation = FoodGames_MaxZedDmg2,
+}
+
+option FoodGames.SkillRadius2
+{
+    type = integer, min = 0, max = 100, default = 4,
+    page = FoodGames, translation = FoodGames_SkillRadius2,
+}
+
+option FoodGames.MaxHitCount2
+{
+    type = integer, min = 0, max = 100, default = 5,
+    page = FoodGames, translation = FoodGames_MaxHitCount2,
 }
 

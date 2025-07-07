@@ -45,7 +45,7 @@ function FoodGames.Catapult(zed, pl, bodyPartType, wpn)
     local md = pl:getModData()
     local consume = SandboxVars.FoodGames.CalConsume  or 500
 	if md['FoodGames']['Mode'] == "HomeLender" then
-        if not md['FoodGames']['consumedCalories'] or md['FoodGames']['consumedCalories'] < consume then
+        if not md['FoodGames']['ConsumedCalories'] or md['FoodGames']['ConsumedCalories'] < consume then
             FoodGames.checkCaloriesAndDisable(pl)
             return
         end
@@ -58,7 +58,7 @@ function FoodGames.Catapult(zed, pl, bodyPartType, wpn)
         else
             FoodGames.doPush(zed, pos)
 
-            md['FoodGames']['consumedCalories'] = md['FoodGames']['consumedCalories'] - consume
+            md['FoodGames']['ConsumedCalories'] = md['FoodGames']['ConsumedCalories'] - consume
             FoodGames.checkCaloriesAndDisable(pl)
         end
         if getCore():getDebug()then

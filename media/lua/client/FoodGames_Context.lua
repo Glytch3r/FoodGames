@@ -25,22 +25,123 @@
    ░▒▓█████▓▒░     ░▒▓█▓▒░        ░▒▓█▓▒░░▒▓█▓▒░  ░▒▓███████▓▒░   ░▒▓██████▓▒░   ░▒▓█▓▒░ ░▒▓█▓▒░  ░▒▓███████▓▒░    ░▒▓███████▓▒░
 █████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████--]]
 
-Recipe = Recipe or {}
-Recipe.OnCreate = Recipe.OnCreate or {}
 
 -----------------------            ---------------------------
 FoodGames = FoodGames or {}
-
-function FoodGames.ZedItemDropHandler(zed)
-   local qty =  SandboxVars.FoodGames.MaxZedDrops or 5
-   local inv = zed:getInventory();
-   inv:AddItems("Base.ZeeVeeMutagen",  ZombRand(0, qty + 1))
-end
-
-Events.OnZombieDead.Add(FoodGames.ZedItemDropHandler);
+-----------------------            ---------------------------
 --[[
-function Recipe.OnCreate.ZVMutagen(items, result, player)
-   local dur = SandboxVars.FoodGames.QueezyDuration
-   player:getModData()['QueezyHr'] = tonumber(dur)
+function FoodGames.invContext(playerNum, context, worldObjects, test)
+	if test then return end
+	local pl = getSpecificPlayer(playerNum)
+	if not pl or not instanceof(pl, "IsoPlayer") then return end
+
+	for _, obj in ipairs(worldObjects) do
+		if instanceof(obj, "IsoObject") then
+			local container = obj:getContainer()
+			if container and instanceof(container, "ItemContainer") then
+				FoodGames.addMetalConsumeOption(context, pl, container)
+				break
+			end
+		end
+	end
 end
- ]]
+
+function FoodGames.invPanelContext(playerNum, context, items)
+	local pl = getSpecificPlayer(playerNum)
+	if not pl or not instanceof(pl, "IsoPlayer") then return end
+
+	local container
+	if #items > 0 then
+		local entry = items[1]
+		local item = entry.items and entry.items[1] or entry
+		if item and item.getContainer then
+			container = item:getContainer()
+		end
+	end
+
+	if container and instanceof(container, "ItemContainer") then
+		FoodGames.addMetalConsumeOption(context, pl, container)
+	end
+end
+
+function FoodGames.addMetalConsumeOption(context, pl, container)
+	local items = container:getItems()
+	local count, total = 0, 0
+
+	for i = 0, items:size() - 1 do
+		local item = items:get(i)
+		local val = FoodGames.getMetalValue(item)
+		if val > 0 then
+			count = count + 1
+			total = total + val
+		end
+	end
+
+	if count == 0 then return end
+
+	local opt = context:addOption("Consume All Metal", container, function()
+		FoodGames.startConsumeMetalAction(pl, container)
+	end)
+
+	local tip = ISToolTip:new()
+	tip:initialise()
+	tip:setVisible(false)
+	tip.description = string.format("Consumes %d item(s)\nYields %.2f metal", count, total)
+	opt.toolTip = tip
+end
+
+Events.OnFillWorldObjectContextMenu.Remove(FoodGames.invContext)
+Events.OnFillWorldObjectContextMenu.Add(FoodGames.invContext)
+
+Events.OnFillInventoryObjectContextMenu.Remove(FoodGames.invPanelContext)
+Events.OnFillInventoryObjectContextMenu.Add(FoodGames.invPanelContext) ]]
+
+-----------------------            ---------------------------
+function FoodGames.context(player, context, worldobjects, test)
+	local pl = getSpecificPlayer(player)
+	local sq = clickedSquare
+	local targ = clickedPlayer
+	local obj = nil
+	if not sq then return end
+    local csq = pl:getCurrentSquare()
+    local Mode =  pl:getModData()['FoodGames']['Mode']
+    if not Mode then
+        pl:getModData()['FoodGames']['Mode'] = "off"
+    end
+	if csq == sq or getCore():getDebug() then
+
+        local optTip = context:addOptionOnTop("Food Games", worldobjects, function()
+            FoodGames.open()
+            getSoundManager():playUISound("UIActivateMainMenuItem")
+            context:hideAndChildren()
+        end)
+
+        local ico = "media/ui/FG_Off.png"
+        if Mode == "HomeLender" then
+            ico = "media/ui/FG_HomeLender.png"
+        elseif Mode == "Wolferine" then
+            ico = "media/ui/FG_Wolferine.png"
+        elseif Mode == "MagKneeToe" then
+            ico = "media/ui/FG_MagKneeToe.png"
+        end
+
+
+        optTip.iconTexture = getTexture(ico)
+        local tip = ISWorldObjectContextMenu.addToolTip()
+        tip:setTexture(ico)
+        local data = pl:getModData()['FoodGames']
+        local calories = data['ConsumedCalories']
+        local metal = data['StoredMetal']
+
+        local storedFood = FoodGames.convertDaysToYMD(tonumber(calories))
+
+        tip.description = "Hero Mode:\n"..tostring(Mode).."\n\n".."Consumed Calories:\n"..tostring(calories).."\n\n".."Stored Food:\n"..tostring(storedFood).."\n\n".."Stored Metal:\n"..tostring(metal)
+        optTip.toolTip = tip
+
+    end
+
+end
+Events.OnFillWorldObjectContextMenu.Remove(FoodGames.context)
+Events.OnFillWorldObjectContextMenu.Add(FoodGames.context)
+
+-----------------------            ---------------------------

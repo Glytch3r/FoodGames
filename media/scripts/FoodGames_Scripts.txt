@@ -21,7 +21,7 @@ module Base
 		HungerChange = -8,
 		ThirstChange = -13,
 		UnhappyChange = -15,
-		Calories = 4000,
+		Calories = 500,
 		Carbohydrates = 39,
 		Lipids = 0,
 		Proteins = 0,
@@ -61,24 +61,49 @@ module Base
     sound HomeLander_ToggleOff
     {
         category = UI,
-        clip { file = media/sound/HomeLander_ToggleOff.ogg,   distanceMax = 1500, is3D = true, volume = 0.40, }
+        clip { file = media/sound/HomeLander_ToggleOff.ogg,   distanceMax = 1500, is3D = true, volume = 0.5, }
     }
 
     sound HomeLander_ToggleOn
     {
         category = UI,
-        clip { file = media/sound/HomeLander_ToggleOn.ogg,   distanceMax = 1500, is3D = true, volume = 0.40, }
+        clip { file = media/sound/HomeLander_ToggleOn.ogg,   distanceMax = 1500, is3D = true, volume = 0.5, }
     }
 
 	sound Wolferine_ToggleOff
     {
         category = UI,
-        clip { file = media/sound/Wolferine_ToggleOff.ogg,   distanceMax = 1500, is3D = true, volume = 0.40, }
+        clip { file = media/sound/Wolferine_ToggleOff.ogg,   distanceMax = 1500, is3D = true, volume = 0.5, }
     }
 
     sound Wolferine_ToggleOn
     {
         category = UI,
-        clip { file = media/sound/Wolferine_ToggleOn.ogg,   distanceMax = 1500, is3D = true, volume = 0.40, }
+        clip { file = media/sound/Wolferine_ToggleOn.ogg,   distanceMax = 1500, is3D = true, volume = 0.5, }
     }
+
+
+	sound MagKneeToe_Skill1
+    {
+        category = UI,
+        clip { file = media/sound/MagKneeToe_Skill1.ogg,   distanceMax = 1500, is3D = true, volume = 0.5, }
+    }
+
+
+	sound MagKneeToe_Skill2
+    {
+        category = UI,
+        clip { file = media/sound/MagKneeToe_Skill2.ogg,   distanceMax = 1500, is3D = true, volume = 0.5, }
+    }
+
+    sound MagKneeToe_Store
+    {
+        category = UI,
+        clip { file = media/sound/MagKneeToe_Store.ogg,   distanceMax = 1500, is3D = true, volume = 0.5, }
+    }
+
+
+
 }
+
+

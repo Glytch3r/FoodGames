@@ -2,11 +2,13 @@
 require "NPCs/MainCreationMethods"
 
 Events.OnGameBoot.Add(function()
+
 	local traitStr = "HomeLender"
 	TraitFactory.addTrait(traitStr, getText("UI_trait_"..traitStr), 2, getText("UI_trait_"..traitStr.."_desc"), false)
 	local traitStr = "Wolferine"
 	TraitFactory.addTrait(traitStr, getText("UI_trait_"..traitStr), 2, getText("UI_trait_"..traitStr.."_desc"), false)
-
+	local traitStr = "MagKneeToe"
+	TraitFactory.addTrait(traitStr, getText("UI_trait_"..traitStr), 2, getText("UI_trait_"..traitStr.."_desc"), false)
 
 	TraitFactory.sortList()
 	local traits = TraitFactory.getTraits()
