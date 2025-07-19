@@ -26,162 +26,79 @@
 █████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████--]]
 
 
+-----------------------            ---------------------------
 FoodGames = FoodGames or {}
 
-function FoodGames.doHealRandPart(pl)
-    pl = pl or getPlayer()
-    if not pl:HasTrait("Wolferine") then return end
+--print(getPlayer():HasTrait("HomeLender") )
+FoodGames.hitReactList ={
+    ["BEHIND"]="Zed_CatapultedBehindBack",
+    ["LEFT"]="Zed_CatapultedLeftFront",
+    ["RIGHT"]="Zed_CatapultedRightFront",
+    ["FRONT"]="Zed_CatapultedFrontFront",
+}
+--[[ if FoodGames.isHasEnergy(pl, skillNum) then
+    FoodGames.consumeEnergy(pl, skillNum)
+end ]]
 
-   -- local consume = SandboxVars.FoodGames.CalConsume or 500
+  
 
-    local mode = FoodGames.getMode()
-    local data = FoodGames.getData()
-    mode = tostring(mode)
-    if mode ~= "Wolferine" then return end
---[[     data.ConsumedCalories = data.ConsumedCalories or 0
-    if data.ConsumedCalories < consume then return end ]]
-    if FoodGames.isHasEnergy(pl, 1) then
-        if FoodGames.HealRandPart(pl) then
-            if FoodGames.isActiveSkill(mode, 1) then
-                FoodGames.setActiveSkill(, 1, false)
-                FoodGames.consumeEnergy(pl, 1)
-            --md.FoodGames.ConsumedCalories = md.FoodGames.ConsumedCalories - consume
-            end
+function FoodGames.Catapult(zed, pl, bodyPartType, wpn)
+    if not zed or not pl then return end
+	if not pl:HasTrait("HomeLender") then return end
+
+    --local consume = SandboxVars.FoodGames.CalConsume  or 500
+
+    local data = FoodGames.getData(pl)
+    local mode = FoodGames.getMode(pl)
+	if mode == "HomeLender" then
+--[[         if not data['ConsumedCalories'] or data['ConsumedCalories'] < consume then
+            FoodGames.checkEnergyAndDisable(pl)
+            return
+        end ]]
+        
+        zed:setAvoidDamage(true)
+        local pos = zed:getPlayerAttackPosition()
+        -- if not  pl:getModData()['FoodGames']['Catapult'] then return end
+        if not FoodGames.isActiveSkill(mode, 1) then return end
+            
+        if isClient() then
+            sendClientCommand('FoodGames', 'Catapult', {zedID = zed:getOnlineID(), pos = pos})
+        else
+            FoodGames.doPush(zed, pos)
+
+            FoodGames.consumeEnergy(pl, skillNum)
+           -- data['ConsumedCalories'] = data['ConsumedCalories'] - consume
             FoodGames.checkEnergyAndDisable(pl)
         end
+        if getCore():getDebug()then
+            print(tostring(pos))
+            zed:addLineChatElement(tostring(pos))
+            local react = (FoodGames.hitReactList[pos])
+            if react then
+                pl:addLineChatElement(tostring(pos))
+            end
+        end
+        local ShoveKills = SandboxVars.FoodGames.ShoveKills or true
+        if ShoveKills then
+            timer:Simple(3, function()
+                zed:setAvoidDamage(false)
+                zed:changeState(ZombieOnGroundState.instance())
+                --zed:setAttackedBy(getCell():getFakeZombieForHit())
+                zed:setAttackedBy(pl)
+                zed:becomeCorpse()
+            end)
+        end
+        --md['FoodGames']['Catapult'] = false
     end
 end
+Events.OnHitZombie.Remove(FoodGames.Catapult)
+Events.OnHitZombie.Add(FoodGames.Catapult)
 
 
-function FoodGames.HealRandPart(pl)
-    pl = pl or getPlayer()
-    local healable = {}
+--[[
+FoodGames.dbg(dbgZed, true)
+FoodGames.dbg(dbgZed, false)
+ ]]
 
-    local bodyParts = pl:getBodyDamage():getBodyParts()
-    for i = 0, bodyParts:size() - 1 do
-        local part = bodyParts:get(i)
-
-        if part:getScratchTime() > 0 then
-            table.insert(healable, {
-                part = part, label = "Scratched", func = function(p)
-                    p:setScratched(false, true)
-                    p:setScratchTime(0)
-                end
-            })
-        end
-
-        if part:isCut() then
-            table.insert(healable, {
-                part = part, label = "Cut", func = function(p)
-                    p:setCut(false)
-                    p:setCutTime(0)
-                end
-            })
-        end
-
-        if part:isDeepWounded() and part:getDeepWoundTime() > 0 then
-            table.insert(healable, {
-                part = part, label = "DeepWounded", func = function(p)
-                    p:setDeepWoundTime(0)
-                    p:setDeepWounded(false)
-                    p:setBleedingTime(0)
-                end
-            })
-        end
-
-        if part:bitten() then
-            table.insert(healable, {
-                part = part, label = "Bitten", func = function(p)
-                    p:SetBitten(false)
-                    p:SetInfected(false)
-                    p:SetFakeInfected(false)
-                end
-            })
-        end
-
-        if part:bleeding() then
-            table.insert(healable, {
-                part = part, label = "Bleeding", func = function(p)
-                    p:setBleedingTime(0)
-                end
-            })
-        end
-
-        if part:isInfectedWound() then
-            table.insert(healable, {
-                part = part, label = "InfectedWound", func = function(p)
-                    p:setWoundInfectionLevel(-1)
-                end
-            })
-        end
-
-        if part:haveBullet() then
-            table.insert(healable, {
-                part = part, label = "Bullet", func = function(p)
-                    local deep = p:isDeepWounded()
-                    local dtime = p:getDeepWoundTime()
-                    local btime = p:getBleedingTime()
-                    p:setDeepWoundTime(dtime)
-                    p:setDeepWounded(deep)
-                    p:setBleedingTime(btime)
-                    p:setHaveBullet(false, 0)
-                end
-            })
-        end
-
-        if part:haveGlass() then
-            table.insert(healable, {
-                part = part, label = "Have Glass", func = function(p)
-                    local deep = p:isDeepWounded()
-                    local dtime = p:getDeepWoundTime()
-                    local btime = p:getBleedingTime()
-                    p:setHaveGlass(false);
-                    p:setDeepWoundTime(dtime)
-                    p:setDeepWounded(deep)
-                    p:setBleedingTime(btime)
-                end
-            })
-        end
-
-
-        if part:getFractureTime() > 0 then
-            table.insert(healable, {
-                part = part, label = "Fracture", func = function(p)
-                    p:setFractureTime(0)
-                end
-            })
-        end
-
-        if part:getBurnTime() > 0 then
-            table.insert(healable, {
-                part = part, label = "Burn", func = function(p)
-                    p:setNeedBurnWash(false)
-                    p:setBurnTime(0)
-
-                end
-            })
-        end
-
-
-
-    end
-    local isShowAlert = SandboxVars.FoodGames.InjuryHealOverheadMessage or true
-    if #healable == 0 then
-        return false
-    end
-
-    local injury = healable[ZombRand(#healable) + 1]
-    injury.func(injury.part)
-
-    if isShowAlert then
-        local msg = string.format("[FoodGames] Healed %s on %s", injury.label, tostring(injury.part:getType()))
-        print(msg)
-        pl:addLineChatElement(tostring(msg))
-    end
-    return true
-end
-
-
-
-
+-----------------------            ---------------------------
 

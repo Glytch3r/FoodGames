@@ -31,60 +31,6 @@ FoodGames = FoodGames or {}
 local Commands = {};
 Commands.FoodGames = {};
 
---print(getPlayer():HasTrait("HomeLender") )
-FoodGames.hitReactList ={
-    ["BEHIND"]="Zed_CatapultedBehindBack",
-    ["LEFT"]="Zed_CatapultedLeftFront",
-    ["RIGHT"]="Zed_CatapultedRightFront",
-    ["FRONT"]="Zed_CatapultedFrontFront",
-}
-
-function FoodGames.Catapult(zed, pl, bodyPartType, wpn)
-    if not zed or not pl then return end
-	if not pl:HasTrait("HomeLender") then return end
-    local md = pl:getModData()
-    local consume = SandboxVars.FoodGames.CalConsume  or 500
-	if md['FoodGames']['Mode'] == "HomeLender" then
-        if not md['FoodGames']['ConsumedCalories'] or md['FoodGames']['ConsumedCalories'] < consume then
-            FoodGames.checkCaloriesAndDisable(pl)
-            return
-        end
-
-        zed:setAvoidDamage(true)
-        local pos = zed:getPlayerAttackPosition()
-        -- if not  pl:getModData()['FoodGames']['Catapult'] then return end
-        if isClient() then
-            sendClientCommand('FoodGames', 'Catapult', {zedID = zed:getOnlineID(), pos = pos})
-        else
-            FoodGames.doPush(zed, pos)
-
-            md['FoodGames']['ConsumedCalories'] = md['FoodGames']['ConsumedCalories'] - consume
-            FoodGames.checkCaloriesAndDisable(pl)
-        end
-        if getCore():getDebug()then
-            print(tostring(pos))
-            zed:addLineChatElement(tostring(pos))
-            local react = (FoodGames.hitReactList[pos])
-            if react then
-                pl:addLineChatElement(tostring(pos))
-            end
-        end
-        local ShoveKills = SandboxVars.FoodGames.ShoveKills or true
-        if ShoveKills then
-            timer:Simple(3, function()
-                zed:setAvoidDamage(false)
-                zed:changeState(ZombieOnGroundState.instance())
-                --zed:setAttackedBy(getCell():getFakeZombieForHit())
-                zed:setAttackedBy(pl)
-                zed:becomeCorpse()
-            end)
-        end
-        --md['FoodGames']['Catapult'] = false
-    end
-end
-Events.OnHitZombie.Remove(FoodGames.Catapult)
-Events.OnHitZombie.Add(FoodGames.Catapult)
-
 function FoodGames.findzedID(int)
 	local zombies = getCell():getObjectList()
 	for i=zombies:size(),1,-1 do
@@ -95,6 +41,19 @@ function FoodGames.findzedID(int)
 		end
 	end
 	return nil
+end
+
+function FoodGames.doPush(zed, pos)
+    if not zed then return end
+    if not pos then return end
+    
+    --local isBehind = zed:getPlayerAttackPosition() == 'BEHIND' or false
+    local react = (FoodGames.hitReactList[pos])
+    if not react then return end
+    zed:setHitReaction("Zed_CatapultedRightFront")
+    zed:setPlayerAttackPosition(pos)
+    zed:setHitReaction(react)
+    zed:setKnockedDown(true)
 end
 
 Commands.FoodGames.Catapult = function(args)
@@ -113,22 +72,4 @@ Events.OnServerCommand.Add(function(module, command, args)
 	end
 end)
 
-function FoodGames.doPush(zed, pos)
-    if not zed then return end
-    if not pos then return end
-
-    --local isBehind = zed:getPlayerAttackPosition() == 'BEHIND' or false
-    local react = (FoodGames.hitReactList[pos])
-    if not react then return end
-    zed:setHitReaction("Zed_CatapultedRightFront")
-    zed:setPlayerAttackPosition(pos)
-    zed:setHitReaction(react)
-    zed:setKnockedDown(true)
-end
---[[
-FoodGames.dbg(dbgZed, true)
-FoodGames.dbg(dbgZed, false)
- ]]
-
------------------------            ---------------------------
 

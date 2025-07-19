@@ -107,8 +107,11 @@ end
 -----------------------            ---------------------------
 
 function FoodGames.consumeAllMetalFromContainer(container, pl)
+
+
 	if not container or not instanceof(container, "ItemContainer") then return end
 	if not pl or not instanceof(pl, "IsoPlayer") then return end
+    if not pl:HasTrait("MagKneeToe") then return end
 
 	local items = container:getItems()
 	local count = items:size()
@@ -129,7 +132,7 @@ function FoodGames.consumeAllMetalFromContainer(container, pl)
 
 	local modData = pl:getModData()['FoodGames']
 	modData['StoredMetal'] = (modData['StoredMetal'] or 0) + total
-
+    
 	for _, item in ipairs(removals) do
 		container:Remove(item)
 	end

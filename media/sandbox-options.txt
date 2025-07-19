@@ -63,10 +63,10 @@ option FoodGames.MaxMetalCapacity
     page = FoodGames, translation = FoodGames_MaxMetalCapacity,
 }
 
-option FoodGames.SkillCost1
+option FoodGames.MetalSkillCost1
 {
     type = integer, min = 0, max = 999, default = 24,
-    page = FoodGames, translation = FoodGames_SkillCost1,
+    page = FoodGames, translation = FoodGames_MetalSkillCost1,
 }
 
 option FoodGames.MinZedDmg1
@@ -93,10 +93,10 @@ option FoodGames.MaxHitCount1
     page = FoodGames, translation = FoodGames_MaxHitCount1,
 }
 
-option FoodGames.SkillCost2
+option FoodGames.MetalSkillCost2
 {
     type = integer, min = 0, max = 999, default = 64,
-    page = FoodGames, translation = FoodGames_SkillCost2,
+    page = FoodGames, translation = FoodGames_MetalSkillCost2,
 }
 
 option FoodGames.MinZedDmg2

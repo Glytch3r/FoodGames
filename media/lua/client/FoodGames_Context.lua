@@ -103,10 +103,13 @@ function FoodGames.context(player, context, worldobjects, test)
 	local targ = clickedPlayer
 	local obj = nil
 	if not sq then return end
+
+	if not FoodGames.isHero(pl) then return end
+
     local csq = pl:getCurrentSquare()
     local Mode =  pl:getModData()['FoodGames']['Mode']
     if not Mode then
-        pl:getModData()['FoodGames']['Mode'] = "off"
+        pl:getModData()['FoodGames']['Mode'] = "HomeLender"
     end
 	if csq == sq or getCore():getDebug() then
 
@@ -115,6 +118,7 @@ function FoodGames.context(player, context, worldobjects, test)
             getSoundManager():playUISound("UIActivateMainMenuItem")
             context:hideAndChildren()
         end)
+
 
         local ico = "media/ui/FG_Off.png"
         if Mode == "HomeLender" then

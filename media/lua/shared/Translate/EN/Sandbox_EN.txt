@@ -31,8 +31,8 @@ Sandbox_EN = {
     Sandbox_FoodGames_MaxMetalCapacity = "Max Metal Capacity",
     Sandbox_FoodGames_MaxMetalCapacity_tooltip = "Maximum amount of stored metal the player can accumulate",
 
-    Sandbox_FoodGames_SkillCost1 = "Skill 1 Calorie Cost",
-    Sandbox_FoodGames_SkillCost1_tooltip = "Calories consumed by MagKneeToe's Skill 1 per use",
+    Sandbox_FoodGames_MetalSkillCost1 = "Skill 1 Calorie Cost",
+    Sandbox_FoodGames_MetalSkillCost1_tooltip = "Calories consumed by MagKneeToe's Skill 1 per use",
 
     Sandbox_FoodGames_MinZedDmg1 = "Skill 1 Min Zombie Damage",
     Sandbox_FoodGames_MinZedDmg1_tooltip = "Minimum damage dealt by MagKneeToe's Skill 1",
@@ -46,8 +46,8 @@ Sandbox_EN = {
     Sandbox_FoodGames_MaxHitCount1 = "Skill 1 Max Hit Count",
     Sandbox_FoodGames_MaxHitCount1_tooltip = "Maximum zombies hit by MagKneeToe's Skill 1 per use",
 
-    Sandbox_FoodGames_SkillCost2 = "Skill 2 Calorie Cost",
-    Sandbox_FoodGames_SkillCost2_tooltip = "Calories consumed by MagKneeToe's Skill 2 per use",
+    Sandbox_FoodGames_MetalSkillCost2 = "Skill 2 Calorie Cost",
+    Sandbox_FoodGames_MetalSkillCost2_tooltip = "Calories consumed by MagKneeToe's Skill 2 per use",
 
     Sandbox_FoodGames_MinZedDmg2 = "Skill 2 Min Zombie Damage",
     Sandbox_FoodGames_MinZedDmg2_tooltip = "Minimum damage dealt by MagKneeToe's Skill 2",
