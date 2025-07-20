@@ -11,13 +11,37 @@ FoodGames.modesStr = {
     "MagKneeToe",
 }
 FoodGames.isOneShot = false
+function FoodGames.getModeNum(mode)
+    mode = mode or FoodGames.getMode()
+    local modeNum = {
+        ["HomeLender"] = 1,
+        ["Wolferine"] = 2,
+        ["MagKneeToe"] = 3,
+    }
+    return modeNum[tostring(mode)]
+end
+function FoodGames.getPreviousMode(mode)
+    mode = mode or FoodGames.getMode()
+    local idx = FoodGames.getModeNum(mode) - 1
+    if idx < 1 then idx = #FoodGames.modesStr end
+    return FoodGames.modesStr[idx]
+end
+
+
+function FoodGames.getNextMode(mode)
+    mode = mode or FoodGames.getMode()
+    local idx = FoodGames.getModeNum(mode) + 1
+    if idx > #FoodGames.modesStr then idx = 1 end
+    return FoodGames.modesStr[idx]
+end
 
 function FoodGames.dataInit()
     local pl = getPlayer()
     if pl then
         local modData = pl:getModData()
+        modData["FoodGames"] =    modData["FoodGames"]  or {}
         local fg = modData["FoodGames"] or {}
-        fg["ConsumedCalories"] = fg["ConsumedCalories"] or 0
+        fg["StoredCalories"] = fg["StoredCalories"] or 0
         fg["StoredMetal"] = fg["StoredMetal"] or 0
         fg["Mode"] = fg["Mode"] or "HomeLender"
         
@@ -30,7 +54,6 @@ function FoodGames.dataInit()
         return fg
     end
 end
-
 
 Events.OnCreatePlayer.Add(FoodGames.dataInit)
 
@@ -52,7 +75,7 @@ function FoodGames.checkEnergyAndDisable(pl, skillNum)
         --FoodGames.setActiveSkill(mode, skillNum, false)
         --FoodGames.disableAllSkills()
     end
---[[     local cal = data and data.ConsumedCalories or 0
+--[[     local cal = data and data.StoredCalories or 0
     local threshold = SandboxVars.FoodGames.CalConsume or 500
     local cost = threshold
     if data and mode ~= "Wolferine" then
@@ -92,6 +115,16 @@ function FoodGames.getActiveSkill(pl)
     end
 end
 
+
+function FoodGames.getMaxEnergy(mode)
+    mode = mode or FoodGames.getMode()
+    if mode == "MagKneeToe" then
+        return SandboxVars.FoodGames.MaxMetalCapacity or 0
+    else
+        return SandboxVars.FoodGames.DailyCalories or 0
+    end
+end
+
 function FoodGames.isHasEnergy(pl, skillNum)
     pl = pl or getPlayer()
     if not pl then return false end
@@ -100,22 +133,26 @@ function FoodGames.isHasEnergy(pl, skillNum)
     local cost = 0
     local data = FoodGames.getData(pl)
     local mode = FoodGames.getMode(pl)
+    data['StoredMetal'] = data['StoredMetal'] or 0
+    data['StoredCalories'] = data['StoredCalories'] or 0
+    
     if mode == "MagKneeToe" then 
         if skillNum == 2 then
             cost = SandboxVars.FoodGames.MetalSkillCost2 or 64
         else 
             cost = SandboxVars.FoodGames.MetalSkillCost1 or 24
         end
-        charge = data.StoredMetal  or 0
+        charge =  data['StoredMetal'] or  0
+
     else
         cost = SandboxVars.FoodGames.CalConsume  or 500
-        charge = data.ConsumedCalories or 0
+        charge = data['StoredCalories'] or 0
+        
     end
- 
+    
 
     return cost <= charge
 end
-
 function FoodGames.consumeEnergy(pl, skillNum)
     pl = pl or getPlayer()
     if not pl then return end
@@ -124,6 +161,9 @@ function FoodGames.consumeEnergy(pl, skillNum)
     local data = FoodGames.getData(pl)
     local mode = FoodGames.getMode(pl)
     local cost = 0
+    
+    data['StoredMetal'] = pl:getModData()['FoodGames']['StoredMetal'] or 0
+    data['StoredCalories'] = pl:getModData()['FoodGames']['StoredCalories'] or 0
 
     if mode == "MagKneeToe" then
         if skillNum == 2 then
@@ -131,12 +171,12 @@ function FoodGames.consumeEnergy(pl, skillNum)
         else
             cost = SandboxVars.FoodGames.MetalSkillCost1 or 24
         end
-        data.StoredMetal = math.max(0, (data.StoredMetal or 0) - cost)
+        data['StoredMetal'] = math.max(0,  data['StoredMetal'] - cost)
     else
         cost = SandboxVars.FoodGames.CalConsume or 500
-        data.ConsumedCalories = math.max(0, (data.ConsumedCalories or 0) - cost)
+        data['StoredCalories'] = math.max(0,  data['StoredCalories'] - cost)
     end
-    
+ 
 end
 
 
@@ -240,6 +280,11 @@ end
 --monkey's code i only placed it on a table
 
 function FoodGames.convertDaysToYMD(days)
+    
+    if not days then return "" end
+
+    if days == 0 then return ""   end
+
     local years = math.floor(days / 365)
     days = days % 365
     local months = math.floor(days / 30)
@@ -253,8 +298,8 @@ function FoodGames.clearCaloriesData()
     local md = pl:getModData()
 
     md['FoodGames'] = md['FoodGames'] or {}
-    md['FoodGames']['ConsumedCalories'] = md['FoodGames']['ConsumedCalories'] or 0
-    md['FoodGames']['ConsumedCalories'] = 0
+    md['FoodGames']['StoredCalories'] = md['FoodGames']['StoredCalories'] or 0
+    md['FoodGames']['StoredCalories'] = 0
     md['FoodGames']['Mode'] = 'HomeLender'
    
 end
@@ -277,7 +322,7 @@ function FoodGames.printFoodGames()
 
     md['FoodGames'] = md['FoodGames'] or {}
     
-    print("Consumed Calories: "..md['FoodGames']['ConsumedCalories'])
+    print("Consumed Calories: "..md['FoodGames']['StoredCalories'])
     print("Stored Metal: "..md['FoodGames']['StoredMetal'])
 
 end

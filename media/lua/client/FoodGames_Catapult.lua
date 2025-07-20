@@ -51,7 +51,7 @@ function FoodGames.Catapult(zed, pl, bodyPartType, wpn)
     local data = FoodGames.getData(pl)
     local mode = FoodGames.getMode(pl)
 	if mode == "HomeLender" then
---[[         if not data['ConsumedCalories'] or data['ConsumedCalories'] < consume then
+--[[         if not data['StoredCalories'] or data['StoredCalories'] < consume then
             FoodGames.checkEnergyAndDisable(pl)
             return
         end ]]
@@ -67,7 +67,7 @@ function FoodGames.Catapult(zed, pl, bodyPartType, wpn)
             FoodGames.doPush(zed, pos)
 
             FoodGames.consumeEnergy(pl, skillNum)
-           -- data['ConsumedCalories'] = data['ConsumedCalories'] - consume
+           -- data['StoredCalories'] = data['StoredCalories'] - consume
             FoodGames.checkEnergyAndDisable(pl)
         end
         if getCore():getDebug()then

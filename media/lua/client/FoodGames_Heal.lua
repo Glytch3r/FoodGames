@@ -38,14 +38,14 @@ function FoodGames.doHealRandPart(pl)
     local data = FoodGames.getData()
     mode = tostring(mode)
     if mode ~= "Wolferine" then return end
---[[     data.ConsumedCalories = data.ConsumedCalories or 0
-    if data.ConsumedCalories < consume then return end ]]
+--[[     data.StoredCalories = data.StoredCalories or 0
+    if data.StoredCalories < consume then return end ]]
     if FoodGames.isHasEnergy(pl, 1) then
         if FoodGames.HealRandPart(pl) then
             if FoodGames.isActiveSkill(mode, 1) then
-                FoodGames.setActiveSkill(, 1, false)
+                FoodGames.setActiveSkill(mode, 1, false)
                 FoodGames.consumeEnergy(pl, 1)
-            --md.FoodGames.ConsumedCalories = md.FoodGames.ConsumedCalories - consume
+            --md.FoodGames.StoredCalories = md.FoodGames.StoredCalories - consume
             end
             FoodGames.checkEnergyAndDisable(pl)
         end

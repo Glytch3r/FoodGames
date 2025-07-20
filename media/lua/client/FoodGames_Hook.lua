@@ -87,26 +87,26 @@ function FoodGames.init()
             print('[FoodGames] Remaining Calories: ' .. self.remainingCalories)
         end
 
-        local ConsumedCalories = self.originalCalories - self.remainingCalories
+        local StoredCalories = self.originalCalories - self.remainingCalories
         if isPerform then
-            ConsumedCalories = self.originalCalories
+            StoredCalories = self.originalCalories
         end
 
         local playerMd = self.character:getModData()
         playerMd['FoodGames'] = playerMd['FoodGames'] or {}
-        playerMd['FoodGames']['ConsumedCalories'] = playerMd['FoodGames']['ConsumedCalories'] or 0
-        local ConsumedCaloriesSnapshot = playerMd['FoodGames']['ConsumedCalories']
-        local daysOfCaloriesSnapshot = math.floor(ConsumedCaloriesSnapshot / SandboxVars.FoodGames.DailyCalories)
-        playerMd['FoodGames']['ConsumedCalories'] = playerMd['FoodGames']['ConsumedCalories'] + ConsumedCalories
-        local newDaysOfCalories = math.floor(playerMd['FoodGames']['ConsumedCalories'] / SandboxVars.FoodGames.DailyCalories)
+        playerMd['FoodGames']['StoredCalories'] = playerMd['FoodGames']['StoredCalories'] or 0
+        local StoredCaloriesSnapshot = playerMd['FoodGames']['StoredCalories']
+        local daysOfCaloriesSnapshot = math.floor(StoredCaloriesSnapshot / SandboxVars.FoodGames.DailyCalories)
+        playerMd['FoodGames']['StoredCalories'] = playerMd['FoodGames']['StoredCalories'] + StoredCalories
+        local newDaysOfCalories = math.floor(playerMd['FoodGames']['StoredCalories'] / SandboxVars.FoodGames.DailyCalories)
         local daysChange = newDaysOfCalories - daysOfCaloriesSnapshot
 
         if dbg then
             print('----------[FoodGames]----------')
-            print('Consumed Calories: ' .. ConsumedCalories)
+            print('Consumed Calories: ' .. StoredCalories)
             print('daysOfCaloriesSnapshot: ' .. daysOfCaloriesSnapshot)
             print('newDaysOfCalories: ' .. newDaysOfCalories)
-            print('Player Consumed Calories: ' .. playerMd['FoodGames']['ConsumedCalories'])
+            print('Player Consumed Calories: ' .. playerMd['FoodGames']['StoredCalories'])
             print("Days Change: " .. daysChange)
         end
 
