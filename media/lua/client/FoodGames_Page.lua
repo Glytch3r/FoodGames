@@ -44,11 +44,9 @@ function FoodGames.ISInventoryPageHook()
         if count > 1 then plural = "s" end
         local cap = "Store ".. tostring(count) .." Metal Item"..tostring(plural)..": ["..tostring(val).."]"
         context:addOption(tostring(cap), container, function()
-            if luautils.walkAdj(pl, sq) then
-                getSoundManager():playUISound("MagKneeToe_Store")
+            if luautils.walkAdj(pl, sq) then             
                 FoodGames.consumeAllMetalFromContainer(container, pl)
                 HaloTextHelper.addTextWithArrow(pl, "Stored Metal "..tostring(val), true, HaloTextHelper.getColorGreen())
-
             end
         end, pl)
 
@@ -103,8 +101,7 @@ function FoodGames.bagContext(player, context, items)
                 local label = "Store ".. count .." Metal Item".. plural ..": ["..val.."]"
 
                 context:addOptionOnTop(label, container, function()
-                    if luautils.walkAdj(pl, sq) then
-                        getSoundManager():playUISound("MagKneeToe_Store")
+                    if luautils.walkAdj(pl, sq) then                   
                         FoodGames.consumeAllMetalFromContainer(container, pl)
                         HaloTextHelper.addTextWithArrow(pl, "Stored Metal ".. val, true, HaloTextHelper.getColorGreen())
                     end

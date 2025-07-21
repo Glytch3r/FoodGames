@@ -10,7 +10,28 @@ FoodGames.modesStr = {
     "Wolferine",
     "MagKneeToe",
 }
-FoodGames.isOneShot = false
+
+function FoodGames.getData(pl)
+    pl = pl or getPlayer()
+    if not pl then return {} end
+    local data = {}
+    local md = pl:getModData()
+    if md then
+        data = md.FoodGames
+    end
+    return data or {}
+end
+
+
+-----------------------            ---------------------------
+function FoodGames.getMode(pl)
+    pl = pl or getPlayer()
+    if not pl then return "HomeLender" end
+    local md = pl:getModData()
+    local mode = md and md.FoodGames and md.FoodGames.Mode
+    return tostring( FoodGames.modeList[tostring(mode)] ) and tostring(mode) or "HomeLender"
+end
+
 function FoodGames.getModeNum(mode)
     mode = mode or FoodGames.getMode()
     local modeNum = {
@@ -34,6 +55,24 @@ function FoodGames.getNextMode(mode)
     if idx > #FoodGames.modesStr then idx = 1 end
     return FoodGames.modesStr[idx]
 end
+-----------------------            ---------------------------
+function FoodGames.resetData()
+    local pl = getPlayer()
+    if pl then
+        local modData = pl:getModData()
+        modData["FoodGames"] = {}
+        local fg = modData["FoodGames"]
+        fg["StoredCalories"] =  0
+        fg["StoredMetal"] = 0
+        fg["Mode"] = FoodGames.getDefaultMode(pl) or "HomeLender"
+        
+        fg["HomeLender"] = { [1] = false, [2] = false }
+        fg["Wolferine"]  = { [1] = false, [2] = false }
+        fg["MagKneeToe"] = { [1] = false, [2] = false }
+
+        return fg
+    end
+end
 
 function FoodGames.dataInit()
     local pl = getPlayer()
@@ -43,58 +82,40 @@ function FoodGames.dataInit()
         local fg = modData["FoodGames"] or {}
         fg["StoredCalories"] = fg["StoredCalories"] or 0
         fg["StoredMetal"] = fg["StoredMetal"] or 0
-        fg["Mode"] = fg["Mode"] or "HomeLender"
+        fg["Mode"] = fg["Mode"] or FoodGames.getDefaultMode(pl) or "HomeLender"
         
-        --fg["Cataapult"] = fg["Cataapult"] or false
         fg["HomeLender"] = fg["HomeLender"] or { [1] = false, [2] = false }
         fg["Wolferine"]  = fg["Wolferine"]  or { [1] = false, [2] = false }
         fg["MagKneeToe"] = fg["MagKneeToe"] or { [1] = false, [2] = false }
-        
-        
         return fg
     end
 end
 
 Events.OnCreatePlayer.Add(FoodGames.dataInit)
 
---if FoodGames.isHasEnergy(pl, skillNum) then 
+-----------------------            ---------------------------
+function FoodGames.isAnySkillActive(mode)
+    local pl = getPlayer()
+    if not pl then return false end
+    mode = mode or FoodGames.getMode(pl) or "HomeLender"
+    mode = tostring(mode)
 
-function FoodGames.checkEnergyAndDisable(pl, skillNum)
-    pl = pl or getPlayer()
-    if not pl then return end
+    local fg = pl:getModData()["FoodGames"]
+    if not fg or not fg[mode] then return false end
 
-
-
+    return fg[mode][1] or fg[mode][2] or false
+end
+function FoodGames.isActiveSkill(mode, skillNum)
     skillNum = skillNum or 1
-    
-    local data = FoodGames.getData(pl)
-    local mode = FoodGames.getMode(pl)
-    local skillNum = FoodGames.getActiveSkill(pl)
-    --FoodGames.consumeEnergy(pl, skillNum)
-    if not FoodGames.isHasEnergy(pl, skillNum) then
-        --FoodGames.setActiveSkill(mode, skillNum, false)
-        --FoodGames.disableAllSkills()
-    end
---[[     local cal = data and data.StoredCalories or 0
-    local threshold = SandboxVars.FoodGames.CalConsume or 500
-    local cost = threshold
-    if data and mode ~= "Wolferine" then
-        if cal - cost < threshold then
-            mode = 'Wolferine'
-        end
-    end ]]
+    local pl = getPlayer()
+    if not pl then return  end
+    mode = mode or FoodGames.getMode(pl) or "HomeLender"
+    mode = tostring(mode)
+    local fg = pl:getModData()["FoodGames"]
+
+    return fg and fg[mode] and fg[mode][skillNum]
 end
 
-
-
-
-
-
---[[ 
-if FoodGames.isHasEnergy(pl, skillNum) then
-    FoodGames.consumeEnergy(pl, skillNum)
-end
- ]]
 function FoodGames.getActiveSkill(pl)
     pl = pl or getPlayer()
     local data = FoodGames.getData(pl)
@@ -115,6 +136,46 @@ function FoodGames.getActiveSkill(pl)
     end
 end
 
+function FoodGames.getActiveSkillStr(mode, skillNum)
+    skillNum = skillNum or 1
+    local pl = getPlayer()
+    if not pl then return  end
+    mode = mode or FoodGames.getMode(pl) or "HomeLender"
+    mode = tostring(mode)
+
+    local fg = pl:getModData()["FoodGames"]
+    local check = fg and fg[mode] and fg[mode][skillNum]
+    return check and "On" or "Off"
+end
+
+function FoodGames.getAnySkillActiveStr(mode)
+    local pl = getPlayer()
+    if not pl then return "Off" end
+    mode = mode or FoodGames.getMode(pl) or "HomeLender"
+    mode = tostring(mode)
+
+    local fg = pl:getModData()["FoodGames"]
+    if not fg or not fg[mode] then return "Off" end
+
+    if fg[mode][1] or fg[mode][2] then
+        return "On"
+    end
+
+    return "Off"
+end
+
+-----------------------            ---------------------------
+
+function FoodGames.getEnergy(pl, mode)
+    local data = FoodGames.getData(pl)
+    mode = mode or FoodGames.getMode(pl)
+    if (pl:HasTrait("MagKneeToe") and mode == "MagKneeToe") then
+        return data["StoredMetal"]
+    elseif (pl:HasTrait("HomeLender") and mode == "HomeLender") or (pl:HasTrait("Wolferine") and mode == "Wolferine") then
+        return data["StoredCalories"]
+    end
+end
+
 
 function FoodGames.getMaxEnergy(mode)
     mode = mode or FoodGames.getMode()
@@ -125,103 +186,67 @@ function FoodGames.getMaxEnergy(mode)
     end
 end
 
-function FoodGames.isHasEnergy(pl, skillNum)
+function FoodGames.isHasEnergy(pl, skillNum, mode)
     pl = pl or getPlayer()
     if not pl then return false end
     skillNum = skillNum or 1
-    local charge = 0
+    mode = mode or FoodGames.getMode(pl)
+    local charge = FoodGames.getEnergy(pl, mode)
     local cost = 0
-    local data = FoodGames.getData(pl)
-    local mode = FoodGames.getMode(pl)
-    data['StoredMetal'] = data['StoredMetal'] or 0
-    data['StoredCalories'] = data['StoredCalories'] or 0
-    
     if mode == "MagKneeToe" then 
         if skillNum == 2 then
             cost = SandboxVars.FoodGames.MetalSkillCost2 or 64
         else 
             cost = SandboxVars.FoodGames.MetalSkillCost1 or 24
         end
-        charge =  data['StoredMetal'] or  0
-
     else
         cost = SandboxVars.FoodGames.CalConsume  or 500
-        charge = data['StoredCalories'] or 0
-        
     end
-    
-
     return cost <= charge
 end
-function FoodGames.consumeEnergy(pl, skillNum)
+
+function FoodGames.consumeEnergy(pl, skillNum, mode)
     pl = pl or getPlayer()
     if not pl then return end
     skillNum = skillNum or 1
 
     local data = FoodGames.getData(pl)
-    local mode = FoodGames.getMode(pl)
+    mode = mode or FoodGames.getMode(pl)
     local cost = 0
-    
-    data['StoredMetal'] = pl:getModData()['FoodGames']['StoredMetal'] or 0
-    data['StoredCalories'] = pl:getModData()['FoodGames']['StoredCalories'] or 0
-
+    if not FoodGames.isHasEnergy(pl, skillNum, mode) then return false end
     if mode == "MagKneeToe" then
         if skillNum == 2 then
             cost = SandboxVars.FoodGames.MetalSkillCost2 or 64
         else
             cost = SandboxVars.FoodGames.MetalSkillCost1 or 24
         end
-        data['StoredMetal'] = math.max(0,  data['StoredMetal'] - cost)
     else
         cost = SandboxVars.FoodGames.CalConsume or 500
-        data['StoredCalories'] = math.max(0,  data['StoredCalories'] - cost)
     end
- 
+    local energy = FoodGames.getEnergy(pl, mode)
+    energy = math.max(0,  energy - cost)
+    FoodGames.checkEnergyAndDisable(pl, 1, mode)
+    return true
 end
 
-
-function FoodGames.getData(pl)
+-----------------------            ---------------------------
+function FoodGames.checkEnergyAndDisable(pl, skillNum, mode)
     pl = pl or getPlayer()
-    if not pl then return {} end
-    local data = {}
-    local md = pl:getModData()
-    if md then
-        data = md.FoodGames
+    if not pl then return end
+    skillNum = skillNum or 1
+    mode = mode or FoodGames.getMode(pl) 
+    local data = FoodGames.getData(pl)
+    if not FoodGames.isHasEnergy(pl, skillNum, mode) then
+        data[mode][skillNum] = false
     end
-    return data or {}
 end
-
-function FoodGames.getMode(pl)
+function FoodGames.disableSkill(pl, skillNum, mode)
     pl = pl or getPlayer()
-    if not pl then return "HomeLender" end
-    local md = pl:getModData()
-    local mode = md and md.FoodGames and md.FoodGames.Mode
-    mode = tostring(mode)
-
-    return FoodGames.modeList[mode] and mode or "HomeLender"
-end
-
-function FoodGames.isActiveSkill(mode, int)
-    int = int or 1
-    local pl = getPlayer()
-    if not pl then return  end
-    mode = mode or FoodGames.getMode(pl) or "HomeLender"
-    mode = tostring(mode)
-    local fg = pl:getModData()["FoodGames"]
-
-    return fg and fg[mode] and fg[mode][int]
-end
-
-function FoodGames.getActiveSkillStr(mode, int)
-    int = int or 1
-    local pl = getPlayer()
-    if not pl then return  end
-    mode = mode or FoodGames.getMode(pl) or "HomeLender"
-    mode = tostring(mode)
-
-    local fg = pl:getModData()["FoodGames"]
-    local check = fg and fg[mode] and fg[mode][int]
-    return check and "On" or "Off"
+    if not pl then return end
+    mode = mode or FoodGames.getMode(pl) 
+    skillNum = skillNum or 1
+    local data = FoodGames.getData(pl)   
+    data[mode][skillNum] = false
 end
 
 function FoodGames.disableAllSkills()
@@ -230,7 +255,7 @@ function FoodGames.disableAllSkills()
     local fg = pl:getModData()["FoodGames"]
     if not fg then return FoodGames.dataInit() end
     
-    for mode, _ in pairs(FoodGames.modeList) do
+    for _, mode in pairs(FoodGames.modesStr) do
         mode = tostring(mode)
         if fg[mode]  then
             fg[mode][1] = false
@@ -241,29 +266,31 @@ function FoodGames.disableAllSkills()
     end
 end
 
-function FoodGames.setActiveSkill(mode, int, val)
-    int = int or 1
+
+function FoodGames.setActiveSkill(mode, skillNum, val)
+    skillNum = skillNum or 1
     local pl = getPlayer()
     if not pl then return end
-    mode = mode or FoodGames.getMode(pl) or "HomeLender"
-    local fg = pl:getModData()["FoodGames"]
-    fg[tostring(mode)][int] = val
-    FoodGames.checkEnergyAndDisable(pl, int) 
+    val = val or true
+    mode = mode or FoodGames.getMode(pl) or FoodGames.getDefaultMode(pl) or nil
+    FoodGames.disableAllSkills()
+    local fg = FoodGames.getData()
+    fg[tostring(mode)][skillNum] = val
+    FoodGames.checkEnergyAndDisable(pl, skillNum) 
+end
+-----------------------            ---------------------------
+function FoodGames.getDefaultMode(pl)
+    pl = pl or getPlayer()
+    for _, mode in pairs(FoodGames.modesStr) do
+        if pl:HasTrait(mode) then
+            return mode
+           -- print(mode)
+        end
+    end
+    return false
 end
 
 
-
---[[ 
-function FoodGames.setActiveSkill(mode, int, val)
-    int = int or 1
-    local pl = getPlayer()
-    if not pl then return end
-    mode = mode or FoodGames.getMode(pl) or "HomeLender"
-    local fg = pl:getModData()["FoodGames"]
-    fg[tostring(mode)][int] = val
-    FoodGames.checkEnergyAndDisable(pl, skillNum)
-end
- ]]
 function FoodGames.isHero(pl)
     pl = pl or getPlayer()
     for mode in pairs(FoodGames.modeList) do
@@ -273,11 +300,8 @@ function FoodGames.isHero(pl)
     end
     return false
 end
---[[ "Icon_Off_"..tostring(self.mode)..".png"
-"Icon_On_"..tostring(self.mode)..".png" ]]
 
 -----------------------            ---------------------------
---monkey's code i only placed it on a table
 
 function FoodGames.convertDaysToYMD(days)
     
@@ -292,7 +316,7 @@ function FoodGames.convertDaysToYMD(days)
 
     return string.format("Y%d M%d D%d", years, months, days)
 end
-
+-----------------------            ---------------------------
 function FoodGames.clearCaloriesData()
     local pl = getPlayer()
     local md = pl:getModData()

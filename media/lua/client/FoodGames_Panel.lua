@@ -1,16 +1,5 @@
 FoodGamesPanel = ISCollapsableWindow:derive("FoodGamesPanel")
---[[
-function FoodGamesPanel:initialise()
-    ISCollapsableWindow.initialise(self)
 
-    self:setResizable(false)
-    --self:setDrawFrame(true)
-
-
-
-
-   -- self:createChildren()
-end ]]
 function FoodGamesPanel:getColor()
     if self.mode == "HomeLender" then      
         self.themeCol =  { r = 0.8, g = 0.3, b = 0.3 }
@@ -19,40 +8,29 @@ function FoodGamesPanel:getColor()
         self.themeCol = { r = 0.76, g = 0.47, b = 0.10 }
         return { r = 0.76, g = 0.47, b = 0.10,  a = 1 }
     elseif self.mode == "MagKneeToe" then
-        self.themeCol = { r = 0.86, g = 0.36, b = 0.89  , a = 1}
+        self.themeCol = { r = 0.86, g = 0.36, b = 0.89}
         return { r = 0.86, g = 0.36, b = 0.89  , a = 1}
     end
     self.themeCol =  { r = 1, g = 1, b = 1 }
     return { r = 1, g = 1, b = 1, a = 1 }
 end
 
+FoodGames.sfxTable_On = {
+    ["HomeLender"] = "HomeLander_ToggleOn",
+    ["Wolferine"] = "Wolferine_ToggleOn",
+    ["MagKneeToe"] = "MagKneeToe_Skill1",
+}
+FoodGames.sfxTable_Off = {
+    ["HomeLender"] = "HomeLander_ToggleOff",
+    ["Wolferine"] = "Wolferine_ToggleOff",
+    ["MagKneeToe"] = "MagKneeToe_Skill2",
+}
+
 -----------------------            ---------------------------
 
 function FoodGamesPanel:titleBarHeight()
     return 24   
 end
---[[ 
-function FoodGamesPanel:onSliderChange(_newval, _slider)
-print('---------')
-  print(_newval)
-print(_slider)
-     print('---------')
-    if getCore():getDebug() then
-        if self.mode == "MagKneeToe" and self.player:HasTrait("MagKneeToe") then
-            self.data['StoredMetal'] = self.EnergySlider:getCurrentValue()       
-            print(self.data['StoredMetal'])
-        else
-            self.data['StoredCalories'] = self.EnergySlider:getCurrentValue()
-            print(self.data['StoredCalories'])
-        end
-    end
-     print('---------')
-
-         print(self.EnergySlider:getCurrentValue())
--- self.EnergySlider:setValues(0, max, math.floor(val))
-   -- self.EnergySlider:setValues(0, 99999, math.floor(val)) 
-end
- ]]
 
 function FoodGamesPanel:createChildren()
     ISCollapsableWindow.createChildren(self)
@@ -63,6 +41,7 @@ function FoodGamesPanel:createChildren()
     self.data = FoodGames.getData(self.player)
     self.mode = FoodGames.getMode(self.player)
 
+
     self.modeNum = { ["HomeLender"]=1,["Wolferine"]=2, ["MagKneeToe"]=3 }
     
     self.modeIndex = self.modeNum[self.mode]
@@ -70,7 +49,7 @@ function FoodGamesPanel:createChildren()
     self:setTitle("")
 
     self.borderColor.a = 0
-   -- self.displayBackground = false
+    -- self.displayBackground = false
     self.backgroundColor.a = 0.9
     self.buttonBorderColor.a = 0
     local btnSize = 40   
@@ -79,11 +58,11 @@ function FoodGamesPanel:createChildren()
     local gap = 42
     local divider = 24
     self.margin = self:titleBarHeight() + 4
-    self.buttonsRow =  self.margin + (btnSize/2) - 5 --self.height - self:titleBarHeight() - self.margin - btnSize  -5
+    self.buttonsRow =  self.margin + (btnSize/2) - 5 
     self.sliderRow =   self.height /2  - divider + sliderH 
     self.sliderCol =   self.margin
     
-    --local buttonsRow = self.height - btnSize - self.margin
+
     local col1 = self.margin 
     local col2 = self.margin  + gap
     local col3 = divider + col2 + gap
@@ -106,29 +85,29 @@ function FoodGamesPanel:createChildren()
     self.arrowRight.displayBackground = false
     self:addChild(self.arrowRight)
 
-
-    --local col3 = self.width / 2 - btnSize
-    --self.data[tostring(self.mode)][1] or FoodGames.getSkil1(self.mode)
-    self.Btn_Skill_1 = ISButton:new( col3, self.buttonsRow, btnSize, btnSize, "", self,function() self:onSkill(1) end)
+    -----------------------            ---------------------------
     self.activeSkill_1 = FoodGames.getActiveSkillStr(self.mode, 1)    
+    self.activeSkill_2 = FoodGames.getActiveSkillStr(self.mode, 2)    
+
+
+    self.Btn_Skill_1 = ISButton:new( col3, self.buttonsRow, btnSize, btnSize, "", self,function() self:onSkill(1) end)
     self.Btn_Skill_1:setImage(getTexture("media/ui/Icon_"..self.activeSkill_1.."_" .. self.mode .. ".png"))
     self.Btn_Skill_1:forceImageSize(32, 32)
     self.Btn_Skill_1.borderColor.a = 0
     self.Btn_Skill_1:initialise()
     self.Btn_Skill_1.displayBackground = false
     self:addChild(self.Btn_Skill_1)
+    self.Btn_Skill_1:setVisible(true)
 
-    --self.activeSkill_1 = self.data[tostring(self.mode)][2] or  FoodGames.getSkil2(self.mode)
-    -- self.activeSkill_2 = FoodGames.getSkil2(self.mode)
+
     self.Btn_Skill_2 = ISButton:new(col4, self.buttonsRow, btnSize, btnSize, "", self,function() self:onSkill(2) end)
-    self.activeSkill_2 = FoodGames.getActiveSkillStr(self.mode, 2)    
     self.Btn_Skill_2:setImage(getTexture("media/ui/Icon_"..self.activeSkill_2.."_MagKneeToe.png"))
     self.Btn_Skill_2:forceImageSize(32, 32)
     self.Btn_Skill_2.borderColor.a = 0
     self.Btn_Skill_2:initialise()
     self.Btn_Skill_2.displayBackground = false
     self:addChild(self.Btn_Skill_2)
-
+    
 
     self.EnergySlider = ISSliderPanel:new(self.sliderCol, self.sliderRow, sliderW, sliderH, self, self.onSliderChange)
     self.EnergySlider:initialise()
@@ -136,17 +115,8 @@ function FoodGamesPanel:createChildren()
     --self.EnergySlider:setValues(0.0, 999, 1, 1, true)
     self.EnergySlider:setHeight(sliderH)
     self:addChild(self.EnergySlider)
-    
-
-   -- self.EnergySlider.sliderColor = self:getColor()
-
---[[     self.EnergySlider.texBtn_Left = self.ArrowLeft
-    self.EnergySlider.texBtn_Right = self.ArrowRight
- ]]
-    self:updateSliderValue()
-    --self:update()
-    
-
+    self.EnergySlider.sliderColor = self:getColor()    
+    self.EnergySlider.sliderMouseOverColor = { r = 1, g = 1, b = 1, a = 1 }
 
 end
 -----------------------            ---------------------------
@@ -161,114 +131,54 @@ function FoodGamesPanel:onSliderChange(val, _slider)
             print(tostring(self.data['StoredCalories']))
         end
     end
-    
---[[     self.EnergySlider:setValues(0, max, math.floor(val))
-    self.EnergySlider:setValues(0, 99999, math.floor(val)) ]]
+    getSoundManager():playUISound("UIActivateButton")
 end
 
 
-function FoodGamesPanel:updateSliderValue()
---[[ 
-    self.data = self.player:getModData()['FoodGames']
-    local max = 0
-    local charge = 0
-    if self.mode == "MagKneeToe" and self.player:HasTrait("MagKneeToe") then
-        max = SandboxVars.FoodGames.MaxMetalCapacity or 46080
-        charge = self.data["StoredMetal"]
 
-    else
-        max = SandboxVars.FoodGames.DailyCalories or 99999
-        charge = self.data["StoredCalories"]       
-    end
-    self.EnergySlider:setCurrentValue(math.min(max, math.max(0, tonumber(charge))))
- ]]
-    self.EnergySlider.sliderColor = self:getColor()
-
-    --self:update()
-end
---[[ 
-function FoodGamesPanel:update()
-    local hasTrait = self.player:HasTrait(tostring(self.mode))
-    if self.mode == self._lastButtonMode then return end
-    self._lastButtonMode = self.mode
-
-    self.Btn_Skill_1:setEnable(hasTrait)
-    self.Btn_Skill_2:setEnable(hasTrait)
-   
-
-    if not hasTrait then
-        local tip = "Requires " .. tostring(self.mode) .. " trait"
-        self.Btn_Skill_1:setTooltip(tip)
-        self.Btn_Skill_2:setTooltip(tip)
-    else
-        self.Btn_Skill_1:setTooltip(nil)
-        self.Btn_Skill_2:setTooltip(nil)
-    end
-
-    self.headStr = "Food Game:    " .. tostring(self.mode)
-    self.activeSkill_1 = FoodGames.getActiveSkillStr(tostring(self.mode), 1)   
-    self.Btn_Skill_1:setImage(getTexture("media/ui/Icon_" .. tostring(self.activeSkill_1) .. "_" .. tostring(self.mode) .. ".png"))
-
-    if self.mode == "MagKneeToe" and self.player:HasTrait("MagKneeToe") then
-        self.activeSkill_2 = FoodGames.getActiveSkillStr("MagKneeToe", 2)
-        self.Btn_Skill_2:setImage(getTexture("media/ui/Icon_" .. tostring(self.activeSkill_2) .. "_MagKneeToe.png"))
-    end
-
-    self.arrowLeft:setImage(getTexture("media/ui/Arrow_Left_" .. tostring(self.mode) .. ".png"))
-    self.arrowRight:setImage(getTexture("media/ui/Arrow_Right_" .. tostring(self.mode) .. ".png"))
-
-    local isEnabled_1 = hasTrait and not FoodGames.isActiveSkill(self.mode, 1) and FoodGames.isHasEnergy(self.player, 1)
-    local isEnabled_2 = hasTrait and self.mode == "MagKneeToe" and not FoodGames.isActiveSkill("MagKneeToe", 2) and FoodGames.isHasEnergy(self.player, 2)
-
-    self.Btn_Skill_1:setEnable(isEnabled_1)
-    self.Btn_Skill_1:setVisible(isEnabled_1)
-
-    self.Btn_Skill_2:setEnable(isEnabled_2)
-    self.Btn_Skill_2:setVisible(isEnabled_2)
-end
-
- ]]
 function FoodGamesPanel:update()
     local hasTrait = self.player:HasTrait(tostring(self.mode))
     self._lastButtonMode = self.mode
 
-    -- Button 1: Always available
     local isEnabled_1 = FoodGames.isHasEnergy(self.player, 1)
-    self.Btn_Skill_1:setEnable(isEnabled_1)
-    self.Btn_Skill_1:setVisible(true)
+    local isEnabled_2 = FoodGames.isHasEnergy(self.player, 2)
 
-    -- Tooltip only shown if trait is missing
+    self.Btn_Skill_1:setEnable(isEnabled_1)
+    self.Btn_Skill_2:setEnable(isEnabled_2)    
+--[[ 
+
     if not hasTrait then
         local tip = "Requires " .. tostring(self.mode) .. " trait"
         self.Btn_Skill_1:setTooltip(tip)
     else
         self.Btn_Skill_1:setTooltip(nil)
     end
-
-    -- Refresh image
+ ]]
     self.activeSkill_1 = FoodGames.getActiveSkillStr(tostring(self.mode), 1)   
+    self.activeSkill_2 = FoodGames.getActiveSkillStr(tostring(self.mode), 2)   
+
+
+
     self.Btn_Skill_1:setImage(getTexture("media/ui/Icon_" .. tostring(self.activeSkill_1) .. "_" .. tostring(self.mode) .. ".png"))
 
-    -- Button 2: Only visible/enabled if MagKneeToe and has energy
-    local isMag = self.mode == "MagKneeToe"
-    local isEnabled_2 = isMag and FoodGames.isHasEnergy(self.player, 2)
-
+    local isMag = tostring( self.mode )== "MagKneeToe"
     self.Btn_Skill_2:setVisible(isMag)
-    self.Btn_Skill_2:setEnable(isEnabled_2)
-
     if isMag then
-        self.activeSkill_2 = FoodGames.getActiveSkillStr("MagKneeToe", 2)
-        self.Btn_Skill_2:setImage(getTexture("media/ui/Icon_" .. tostring(self.activeSkill_2) .. "_MagKneeToe.png"))
-        self.Btn_Skill_2:setTooltip(nil)
-    else
-        self.Btn_Skill_2:setTooltip("Only available for MagKneeToe")
+        self.Btn_Skill_2:setImage(getTexture("media/ui/Icon_" .. tostring(self.activeSkill_2) .. "_" .. tostring(self.mode) .. ".png"))
+        if not self.activeSkill_2 then
+            self.Btn_Skill_2.textureColor.a = 0.2
+        else
+            self.Btn_Skill_2.textureColor.a = 1
+        end
     end
+    
+  
 
-    -- Update arrows
+    --self.Btn_Skill_2:setTooltip("Only available for MagKneeToe")
     self.arrowLeft:setImage(getTexture("media/ui/Arrow_Left_" .. tostring(self.mode) .. ".png"))
     self.arrowRight:setImage(getTexture("media/ui/Arrow_Right_" .. tostring(self.mode) .. ".png"))
 
-    -- Update header
+ 
     self.headStr = "Food Game:    " .. tostring(self.mode)
 end
 
@@ -295,6 +205,8 @@ function FoodGamesPanel:onArrowLeft()
         return self:onArrowLeft() 
     end
     self:update()
+    getSoundManager():playUISound("UIActivateTab")
+
 end
 
 function FoodGamesPanel:onArrowRight()
@@ -307,6 +219,8 @@ function FoodGamesPanel:onArrowRight()
         return self:onArrowRight() 
     end
     self:update()
+    getSoundManager():playUISound("UIActivateTab")
+
 end
 
 
@@ -316,13 +230,23 @@ function FoodGamesPanel:onSkill(skillNum)
     skillNum = skillNum or 1
     local trait = tostring(self.mode)
     local pl = self.player
-
-    if not FoodGames.isHasEnergy(pl, skillNum) then return end
     if not pl:HasTrait(trait) then return end
+    
 
     local isActive = FoodGames.isActiveSkill(self.mode, skillNum)
-    local newState = not isActive
-    FoodGames.setActiveSkill(self.mode, skillNum, newState)
+    local sfx = "UIActivateMainMenuItem"
+    if isActive then
+        sfx = FoodGames.sfxTable_Off[tostring(self.mode)]
+        FoodGames.disableSkill(pl, skillNum, tostring(self.mode))
+    else
+        if FoodGames.isHasEnergy(pl, skillNum, self.mode) then 
+            sfx = FoodGames.sfxTable_On[tostring(self.mode)]
+            FoodGames.setActiveSkill(self.mode, skillNum, true)
+        end        
+    end
+    getSoundManager():playUISound(sfx)
+    
+
 end
 
 -----------------------            ---------------------------
@@ -333,31 +257,13 @@ function FoodGamesPanel:new(x, y, width, height, player)
     self.__index = self
     o.player = player
     o.user = player:getUsername()
---[[     if y == 0 then
-        o.y = o:getMouseY() - (height / 2)
-        o:setY(o.y)
-    end
-    if x == 0 then
-        o.x = o:getMouseX() - (width / 2)
-        o:setX(o.x)
-    end ]]
 
     o.drawFrame = true
 	o.clearStentil = true;
-    
-
-    --o.width = 322;
-    --o.height = 172;
---[[     local txtWidth = getTextManager():MeasureStringX(UIFont.Medium, text) + 10;
-    if width < txtWidth then
-        o.width = txtWidth;
-    end ]]
     o.anchorLeft = true
     o.anchorRight = true
     o.anchorTop = true
     o.anchorBottom = true
-
-
     o.borderColor = { r = 0.76, g = 0.59, b = 0.11, a = 1}
     o.backgroundColor = { r = 0.30, g = 0.30, b = 0.30, a =  0.1}--{ r = 0.12, g = 0.39, b = 0.77,  a = 1}
     o.buttonBorderColor = {r = 0.7, g = 0.7, b = 0.7, a = 1}
@@ -441,8 +347,7 @@ function FoodGamesPanel:prerender()
     --backgroundColorMouseOver
     self.data = self.player:getModData()['FoodGames']
     self.mode = self.player:getModData()['FoodGames']['Mode']
-   -- self.themeCol = self.themeCol or { r = 1, g = 1, b = 1, a = 1 }
-    --self.bgSprite.texture   = Texture.getSharedTexture("media/ui/BG_Off_" .. self.mode .. ".png")
+    
     
     if self.mode == "HomeLender" then      
         self.themeCol =  { r = 0.8, g = 0.3, b = 0.3 }
@@ -474,7 +379,10 @@ function FoodGamesPanel:prerender()
     end
     
     self.EnergySlider.sliderColor = self:getColor()
-    self.isSkillActiveStr = FoodGames.getActiveSkillStr(tostring(self.mode), 1) or (self.mode == "MagKneeToe" and FoodGames.getActiveSkillStr(tostring(self.mode), 2))
+    self.activeSkill_1 = FoodGames.getActiveSkillStr(self.mode, 1)    
+    self.activeSkill_2 = FoodGames.getActiveSkillStr(self.mode, 2)   
+    self.isSkillActiveStr = FoodGames.getAnySkillActiveStr(self.mode)
+    -- self.isSkillActiveStr =  FoodGames.getActiveSkillStr(tostring(self.mode), 1) or (self.mode == "MagKneeToe" and FoodGames.getActiveSkillStr(tostring(self.mode), 2))
     self.bgTexture = getTexture("media/ui/BG_"..tostring(self.isSkillActiveStr).."_" .. self.mode .. ".png")
     if self.bgTexture then
         self.bgX = (self.width / 2) - (self.bgTexture:getWidth() / 2)
@@ -482,6 +390,10 @@ function FoodGamesPanel:prerender()
         self:drawTexture(self.bgTexture, self.bgX, self.bgY, 1)
         self:drawTexture(self.bgTexture, self.bgX, self.bgY, 1)
     end
+
+    
+
+
     self:update()
     self.header = self:drawTextCentre(self.headStr, self.width/2, 4, 1, 1, 1, 1, UIFont.Medium);
 end

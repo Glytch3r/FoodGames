@@ -28,30 +28,54 @@
 
 FoodGames = FoodGames or {}
 
+--FoodGames.isActiveSkill("Wolferine", 1)
+
 function FoodGames.doHealRandPart(pl)
     pl = pl or getPlayer()
     if not pl:HasTrait("Wolferine") then return end
-
+    
    -- local consume = SandboxVars.FoodGames.CalConsume or 500
 
     local mode = FoodGames.getMode()
     local data = FoodGames.getData()
     mode = tostring(mode)
     if mode ~= "Wolferine" then return end
---[[     data.StoredCalories = data.StoredCalories or 0
-    if data.StoredCalories < consume then return end ]]
-    if FoodGames.isHasEnergy(pl, 1) then
-        if FoodGames.HealRandPart(pl) then
-            if FoodGames.isActiveSkill(mode, 1) then
-                FoodGames.setActiveSkill(mode, 1, false)
-                FoodGames.consumeEnergy(pl, 1)
-            --md.FoodGames.StoredCalories = md.FoodGames.StoredCalories - consume
-            end
-            FoodGames.checkEnergyAndDisable(pl)
+    if FoodGames.isHasEnergy(pl, 1, mode) then
+        if FoodGames.isActiveSkill(mode, 1) then
+            if FoodGames.hasAnyInjury(pl) then
+                if FoodGames.HealRandPart(pl) then
+                    FoodGames.consumeEnergy(pl, 1, mode)
+                end
+            end            
         end
     end
 end
 
+function FoodGames.hasAnyInjury(pl)
+    pl = pl or getPlayer()
+    local bodyParts = pl:getBodyDamage():getBodyParts()
+    for i = 1, bodyParts:size() do
+        local bp = bodyParts:get(i - 1)
+        if bp:HasInjury() 
+            or bp:bandaged() 
+            or bp:stitched() 
+            or bp:getSplintFactor() > 0 
+            or bp:getAdditionalPain() > 10 
+            or bp:getStiffness() > 5 then
+            return true
+        end
+    end
+    return false
+end
+
+function FoodGames.getDamage(pl, dmgType, dmg)
+    if not pl:HasTrait("Wolferine") then return end
+    local mode = FoodGames.getMode()
+    if not mode then return end
+    if mode ~= "Wolferine" then return end
+    FoodGames.doHealRandPart(pl)
+end
+Events.OnPlayerGetDamage.Add(FoodGames.getDamage)
 
 function FoodGames.HealRandPart(pl)
     pl = pl or getPlayer()

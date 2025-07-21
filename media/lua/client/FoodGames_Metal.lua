@@ -137,7 +137,7 @@ function FoodGames.consumeAllMetalFromContainer(container, pl)
 		container:Remove(item)
 	end
     pl:getInventory():setDrawDirty(true)
-    getSoundManager():playUISound("MagKneeToe_Store")
+    pl:playSound("MagKneeToe_Store")
 
 end
 -----------------------            ---------------------------

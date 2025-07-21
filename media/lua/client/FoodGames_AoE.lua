@@ -28,29 +28,37 @@
 
 
 FoodGames = FoodGames or {}
+--[[ 
 
+print(tostring(FoodGames.isActiveSkill("MagKneeToe", 1)))
+print(tostring(FoodGames.isActiveSkill("MagKneeToe", 2)))
+ ]]
 function FoodGames.doShotgun()
     local pl = getPlayer()
     local mode = FoodGames.getMode()
     local data = FoodGames.getData()
     if not pl or not mode then return end
     if not (pl:HasTrait("MagKneeToe") and mode == "MagKneeToe") then return end
-
-    local isSkill1 = FoodGames.isActiveSkill(mode, 1)
-    local isSkill2 = FoodGames.isActiveSkill(mode, 2)
+    if not tostring(WeaponType.getWeaponType(pl)) == "barehand" then return end
+    local isSkill1 = FoodGames.isActiveSkill("MagKneeToe", 1)
+    local isSkill2 = FoodGames.isActiveSkill("MagKneeToe", 2)
 
     if isSkill1 then     
+        pl:playSound("MagKneeToe_Skill1");
+        addSound(pl, pl:getX(), pl:getY(),pl:getZ(), 5, 1);
         FoodGames.doAoE(1)
     end
 
     if isSkill2 then       
+        pl:playSound("MagKneeToe_Skill2")
+        addSound(pl, pl:getX(), pl:getY(),pl:getZ(), 5, 1);
         FoodGames.doAoE(2)
     end
 
 end
 Events.EveryOneMinute.Add(FoodGames.doShotgun)
 
-local function doRoll(percent)
+function FoodGames.doRoll(percent)
     return percent >= ZombRand(1, 101)
 end
 
@@ -64,19 +72,18 @@ function FoodGames.doDmg(zed, skillNum)
     local pl = getPlayer()
     if not pl or not zed or not zed:isAlive() then return end
 
-    FoodGames.consumeEnergy(pl,skillNum)
-    FoodGames.checkEnergyAndDisable(pl)
-
-    zed:setAttackedBy(pl)
-    local dmg = ZombRand(min, max)
-    zed:setHealth(zed:getHealth() - dmg)
-
-    if doRoll(50) then
-        zed:setHitReaction("ShotBelly")
-    else
-        zed:setKnockedDown(true)
+    if FoodGames.consumeEnergy(pl,skillNum) then
+        zed:setAttackedBy(pl)
+        local dmg = ZombRand(min, max)
+        zed:setHealth(zed:getHealth() - dmg)
+        zed:playSound("KatanaHit")
+        if FoodGames.doRoll(50) then
+            zed:setHitReaction("ShotBelly")
+        else
+            zed:setKnockedDown(true)
+        end
     end
-
+    FoodGames.checkEnergyAndDisable(pl, skillNum)
 end
 
 function FoodGames.doAoE(skillNum)
@@ -113,6 +120,7 @@ function FoodGames.doAoE(skillNum)
     table.sort(sorted, function(a, b) return a.distSq < b.distSq end)
 
     for i = 1, math.min(maxZedCount, #sorted) do
+        pl:startMuzzleFlash()
         FoodGames.doDmg(sorted[i].zed, skillNum)
     end
 end

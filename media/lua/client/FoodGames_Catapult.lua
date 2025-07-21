@@ -39,8 +39,11 @@ FoodGames.hitReactList ={
 --[[ if FoodGames.isHasEnergy(pl, skillNum) then
     FoodGames.consumeEnergy(pl, skillNum)
 end ]]
+--[[ 
+print(tostring(FoodGames.isActiveSkill("HomeLender", 1)))
 
-  
+
+   ]]
 
 function FoodGames.Catapult(zed, pl, bodyPartType, wpn)
     if not zed or not pl then return end
@@ -51,24 +54,21 @@ function FoodGames.Catapult(zed, pl, bodyPartType, wpn)
     local data = FoodGames.getData(pl)
     local mode = FoodGames.getMode(pl)
 	if mode == "HomeLender" then
---[[         if not data['StoredCalories'] or data['StoredCalories'] < consume then
-            FoodGames.checkEnergyAndDisable(pl)
-            return
-        end ]]
+
+        if not FoodGames.isHasEnergy(pl, 1) then return end
+        if not FoodGames.isActiveSkill(mode, 1) then return end
         
         zed:setAvoidDamage(true)
         local pos = zed:getPlayerAttackPosition()
-        -- if not  pl:getModData()['FoodGames']['Catapult'] then return end
-        if not FoodGames.isActiveSkill(mode, 1) then return end
-            
+
         if isClient() then
             sendClientCommand('FoodGames', 'Catapult', {zedID = zed:getOnlineID(), pos = pos})
         else
             FoodGames.doPush(zed, pos)
 
-            FoodGames.consumeEnergy(pl, skillNum)
-           -- data['StoredCalories'] = data['StoredCalories'] - consume
-            FoodGames.checkEnergyAndDisable(pl)
+            FoodGames.consumeEnergy(pl, 1)
+            
+            FoodGames.checkEnergyAndDisable(pl, 1)
         end
         if getCore():getDebug()then
             print(tostring(pos))
