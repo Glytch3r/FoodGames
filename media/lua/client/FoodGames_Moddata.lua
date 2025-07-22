@@ -105,15 +105,14 @@ function FoodGames.isAnySkillActive(mode)
 
     return fg[mode][1] or fg[mode][2] or false
 end
+
 function FoodGames.isActiveSkill(mode, skillNum)
     skillNum = skillNum or 1
     local pl = getPlayer()
-    if not pl then return  end
-    mode = mode or FoodGames.getMode(pl) or "HomeLender"
-    mode = tostring(mode)
-    local fg = pl:getModData()["FoodGames"]
-
-    return fg and fg[mode] and fg[mode][skillNum]
+    if not pl then return false end
+    mode = tostring(mode) or tostring(FoodGames.getMode(pl)) or "HomeLender"
+    local data = FoodGames.getData(pl)
+    return data[mode][skillNum]
 end
 
 function FoodGames.getActiveSkill(pl)
@@ -237,7 +236,7 @@ function FoodGames.checkEnergyAndDisable(pl, skillNum, mode)
     mode = mode or FoodGames.getMode(pl) 
     local data = FoodGames.getData(pl)
     if not FoodGames.isHasEnergy(pl, skillNum, mode) then
-        data[mode][skillNum] = false
+        FoodGames.disableSkill(pl, skillNum, mode)
     end
 end
 function FoodGames.disableSkill(pl, skillNum, mode)
@@ -252,16 +251,15 @@ end
 function FoodGames.disableAllSkills()
     local pl = getPlayer()
     if not pl then return end
-    local fg = pl:getModData()["FoodGames"]
-    if not fg then return FoodGames.dataInit() end
-    
     for _, mode in pairs(FoodGames.modesStr) do
-        mode = tostring(mode)
-        if fg[mode]  then
-            fg[mode][1] = false
-            if fg[mode][2] ~= nil then 
-                fg[mode][2] = false
-            end
+        if FoodGames.isActiveSkill(tostring(mode), 1) then
+            FoodGames.disableSkill(pl, 1, tostring(mode))
+           	if getCore():getDebug() then print("disabled: "..tostring(mode).." skill: 1") end
+        end
+        if FoodGames.isActiveSkill(tostring(mode), 2) then
+            FoodGames.disableSkill(pl, 2, tostring(mode))
+            if getCore():getDebug() then print("disabled: "..tostring(mode).." skill: 2") end
+            
         end
     end
 end

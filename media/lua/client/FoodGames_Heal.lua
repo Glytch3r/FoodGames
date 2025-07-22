@@ -68,6 +68,7 @@ function FoodGames.hasAnyInjury(pl)
     return false
 end
 
+
 function FoodGames.getDamage(pl, dmgType, dmg)
     if not pl:HasTrait("Wolferine") then return end
     local mode = FoodGames.getMode()

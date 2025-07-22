@@ -66,10 +66,10 @@ function FoodGames.Catapult(zed, pl, bodyPartType, wpn)
         else
             FoodGames.doPush(zed, pos)
 
-            FoodGames.consumeEnergy(pl, 1)
-            
-            FoodGames.checkEnergyAndDisable(pl, 1)
+    
         end
+        FoodGames.consumeEnergy(pl, 1)            
+        FoodGames.checkEnergyAndDisable(pl, 1)
         if getCore():getDebug()then
             print(tostring(pos))
             zed:addLineChatElement(tostring(pos))

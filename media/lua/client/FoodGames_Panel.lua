@@ -208,6 +208,7 @@ function FoodGamesPanel:onArrowLeft()
     getSoundManager():playUISound("UIActivateTab")
 
 end
+              
 
 function FoodGamesPanel:onArrowRight()
 	if not FoodGames.isHero(self.player) then return end
@@ -229,24 +230,40 @@ end
 function FoodGamesPanel:onSkill(skillNum)
     skillNum = skillNum or 1
     local trait = tostring(self.mode)
-    local pl = self.player
-    if not pl:HasTrait(trait) then return end
-    
 
-    local isActive = FoodGames.isActiveSkill(self.mode, skillNum)
+    if not self.player:HasTrait(trait) then return end
+    local isActive = FoodGames.isActiveSkill(tostring(self.mode), skillNum)
     local sfx = "UIActivateMainMenuItem"
-    if isActive then
-        sfx = FoodGames.sfxTable_Off[tostring(self.mode)]
-        FoodGames.disableSkill(pl, skillNum, tostring(self.mode))
-    else
-        if FoodGames.isHasEnergy(pl, skillNum, self.mode) then 
-            sfx = FoodGames.sfxTable_On[tostring(self.mode)]
-            FoodGames.setActiveSkill(self.mode, skillNum, true)
+    FoodGames.disableAllSkills()
+    if not isActive then
+        if FoodGames.isHasEnergy(self.player, skillNum, self.mode) then 
+            sfx = FoodGames.sfxTable_On[tostring(self.mode)]            
+            FoodGames.setActiveSkill(self.mode, skillNum, true)   
+            if self.mode == "MagKneeToe" then
+                if skillNum == 1 then
+                    FoodGames.doShotgun()  
+                    self.Btn_Skill_1:setEnable(false)
+                    self.Btn_Skill_2:setEnable(false)
+                    timer:Simple(1.5, function()
+                        FoodGames.disableSkill(self.player, 1, "MagKneeToe")
+                        FoodGames.disableSkill(self.player, 2, "MagKneeToe")
+                        self.Btn_Skill_1:setEnable(true)
+                        self.Btn_Skill_2:setEnable(true)      
+                    end)
+                end
+            elseif self.mode == "Wolferine" then
+                FoodGames.getDamage(self.player)
+            end
+      
         end        
+  
+       
+    else
+        sfx = FoodGames.sfxTable_Off[tostring(self.mode)]
     end
     getSoundManager():playUISound(sfx)
     
-
+    
 end
 
 -----------------------            ---------------------------
