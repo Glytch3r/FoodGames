@@ -1,6 +1,8 @@
 Sandbox_EN = {
     Sandbox_FoodGames = "Food Games",
 
+    Sandbox_FoodGames_LargeFonts = "Large UI Fonts",
+
     Sandbox_FoodGames_DailyCalories = "Daily Calories",
     Sandbox_FoodGames_DailyCalories_tooltip = "The daily set amount of calories a player must consume to earn a reward",
 
@@ -33,6 +35,10 @@ Sandbox_EN = {
 
     Sandbox_FoodGames_MetalSkillCost1 = "Skill 1 Calorie Cost",
     Sandbox_FoodGames_MetalSkillCost1_tooltip = "Calories consumed by MagKneeToe's Skill 1 per use",
+
+    Sandbox_FoodGames_MagKneeToeBarehands = "MagKneeToe Barehands",
+    Sandbox_FoodGames_MagKneeToeBarehands_tooltip = "MagKneeToe can only cast while barehanded",
+
 
     Sandbox_FoodGames_MinZedDmg1 = "Skill 1 Min Zombie Damage",
     Sandbox_FoodGames_MinZedDmg1_tooltip = "Minimum damage dealt by MagKneeToe's Skill 1",

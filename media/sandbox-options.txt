@@ -11,6 +11,19 @@ option FoodGames.DailyCalories
     translation = FoodGames_DailyCalories,
 }
 
+
+option FoodGames.LargeFonts
+{
+	type = boolean, default = false,
+	page = FoodGames, translation = FoodGames_LargeFonts,
+}
+
+option FoodGames.MagKneeToeBarehands
+{
+	type = boolean, default = true,
+	page = FoodGames, translation = FoodGames_MagKneeToeBarehands,
+}
+
 option FoodGames.ShoveKills
 {
 	type = boolean, default = true,

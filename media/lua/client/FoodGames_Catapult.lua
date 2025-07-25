@@ -57,37 +57,38 @@ function FoodGames.Catapult(zed, pl, bodyPartType, wpn)
 
         if not FoodGames.isHasEnergy(pl, 1) then return end
         if not FoodGames.isActiveSkill(mode, 1) then return end
-        
-        zed:setAvoidDamage(true)
-        local pos = zed:getPlayerAttackPosition()
 
-        if isClient() then
-            sendClientCommand('FoodGames', 'Catapult', {zedID = zed:getOnlineID(), pos = pos})
-        else
-            FoodGames.doPush(zed, pos)
+        if FoodGames.consumeEnergy(pl, 1) then
+            zed:setAvoidDamage(true)
+            local pos = zed:getPlayerAttackPosition()
 
-    
-        end
-        FoodGames.consumeEnergy(pl, 1)            
-        FoodGames.checkEnergyAndDisable(pl, 1)
-        if getCore():getDebug()then
-            print(tostring(pos))
-            zed:addLineChatElement(tostring(pos))
-            local react = (FoodGames.hitReactList[pos])
-            if react then
-                pl:addLineChatElement(tostring(pos))
+            if isClient() then
+                sendClientCommand('FoodGames', 'Catapult', {zedID = zed:getOnlineID(), pos = pos})
+            else
+                FoodGames.doPush(zed, pos)
+            end
+                    
+            
+            if getCore():getDebug()then
+                print(tostring(pos))
+                zed:addLineChatElement(tostring(pos))
+                local react = (FoodGames.hitReactList[pos])
+                if react then
+                    pl:addLineChatElement(tostring(pos))
+                end
+            end
+            local ShoveKills = SandboxVars.FoodGames.ShoveKills or true
+            if ShoveKills then
+                timer:Simple(3, function()
+                    zed:setAvoidDamage(false)
+                    zed:changeState(ZombieOnGroundState.instance())
+                    --zed:setAttackedBy(getCell():getFakeZombieForHit())
+                    zed:setAttackedBy(pl)
+                    zed:becomeCorpse()
+                end)
             end
         end
-        local ShoveKills = SandboxVars.FoodGames.ShoveKills or true
-        if ShoveKills then
-            timer:Simple(3, function()
-                zed:setAvoidDamage(false)
-                zed:changeState(ZombieOnGroundState.instance())
-                --zed:setAttackedBy(getCell():getFakeZombieForHit())
-                zed:setAttackedBy(pl)
-                zed:becomeCorpse()
-            end)
-        end
+        FoodGames.checkEnergyAndDisable(pl, 1)
         --md['FoodGames']['Catapult'] = false
     end
 end

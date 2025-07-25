@@ -231,17 +231,20 @@ function FoodGamesPanel:onSkill(skillNum)
     skillNum = skillNum or 1
     local trait = tostring(self.mode)
 
-    if not self.player:HasTrait(trait) then return end
+
     local isActive = FoodGames.isActiveSkill(tostring(self.mode), skillNum)
     local sfx = "UIActivateMainMenuItem"
-    FoodGames.disableAllSkills()
+   
     if not isActive then
+        if not self.player:HasTrait(trait) then return end
         if FoodGames.isHasEnergy(self.player, skillNum, self.mode) then 
             sfx = FoodGames.sfxTable_On[tostring(self.mode)]            
             FoodGames.setActiveSkill(self.mode, skillNum, true)   
             if self.mode == "MagKneeToe" then
                 if skillNum == 1 then
-                    FoodGames.doShotgun()  
+                    if FoodGames.consumeEnergy(self.player ,1) then
+                        FoodGames.doShotgun()  
+                    end
                     self.Btn_Skill_1:setEnable(false)
                     self.Btn_Skill_2:setEnable(false)
                     timer:Simple(1.5, function()
@@ -255,10 +258,9 @@ function FoodGamesPanel:onSkill(skillNum)
                 FoodGames.getDamage(self.player)
             end
       
-        end        
-  
-       
+        end      
     else
+        FoodGames.disableAllSkills()
         sfx = FoodGames.sfxTable_Off[tostring(self.mode)]
     end
     getSoundManager():playUISound(sfx)
@@ -378,12 +380,19 @@ function FoodGamesPanel:prerender()
         self.themeCol = self.themeCol or { r = 1, g = 1, b = 1}
     end
     
+    self.headerFont = UIFont.Small
+    self.infoFont = UIFont.Medium
+    if SandboxVars.FoodGames.LargeFonts then
+        self.headerFont = UIFont.Medium
+        self.infoFont = UIFont.Large
+    end
+
     if self.mode == "MagKneeToe" then
         local metal = tonumber(self.data["StoredMetal"]) or 0
         local max = SandboxVars.FoodGames.MaxMetalCapacity or 46080
         self.EnergySlider.maxValue = max
         metal = math.max(0, math.min(max, metal))
-        self:drawText("Metal Stored: \n"..tostring(tostring(math.floor(metal))).." / "..tostring(max), self.margin+4, self.sliderRow+self.margin+5, self.themeCol.r, self.themeCol.g, self.themeCol.b, 1, UIFont.Large)
+        self:drawText("Metal Stored: \n"..tostring(tostring(math.floor(metal))).." / "..tostring(max), self.margin+4, self.sliderRow+self.margin+5, self.themeCol.r, self.themeCol.g, self.themeCol.b, 1, self.infoFont)
         --self:drawTextCentre(tostring(math.floor(metal)), 60, self.sliderRow+5, self.themeCol.r, self.themeCol.g, self.themeCol.b, 1, UIFont.Large)
     else     
         local calories = tonumber(self.data["StoredCalories"]) or 0
@@ -391,7 +400,7 @@ function FoodGamesPanel:prerender()
         self.EnergySlider.maxValue = max
         calories = math.max(0, math.min(max, calories))        
         local storedFood = FoodGames.convertDaysToYMD(calories)
-        self:drawText("Food Stored: "..tostring(math.floor(calories)).. "\n"..tostring(storedFood), self.margin+4,  self.sliderRow+self.margin+5, self.themeCol.r, self.themeCol.g, self.themeCol.b, 1, UIFont.Large)
+        self:drawText("Food Stored: "..tostring(math.floor(calories)).. "\n"..tostring(storedFood), self.margin+4,  self.sliderRow+self.margin+5, self.themeCol.r, self.themeCol.g, self.themeCol.b, 1, self.infoFont)
        -- self:drawTextCentre(tostring(math.floor(calories)), 60, self.sliderRow+5, self.themeCol.r, self.themeCol.g, self.themeCol.b, 1, UIFont.Large)
     end
     
@@ -408,9 +417,7 @@ function FoodGamesPanel:prerender()
         self:drawTexture(self.bgTexture, self.bgX, self.bgY, 1)
     end
 
-    
-
 
     self:update()
-    self.header = self:drawTextCentre(self.headStr, self.width/2, 4, 1, 1, 1, 1, UIFont.Medium);
+    self.header = self:drawTextCentre(self.headStr, self.width/2, 4, 1, 1, 1, 1, self.headerFont);
 end

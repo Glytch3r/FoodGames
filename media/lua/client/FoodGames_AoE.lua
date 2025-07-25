@@ -100,16 +100,16 @@ end
 function FoodGames.doShotgun2()
     local pl = getPlayer()
     local mode = FoodGames.getMode()
-    local data = FoodGames.getData()
     if not pl or not mode then return end
     if not (pl:HasTrait("MagKneeToe") and mode == "MagKneeToe") then return end
     if not tostring(WeaponType.getWeaponType(pl)) == "barehand" then return end
-    FoodGames.disableSkill(pl, 1, "MagKneeToe")
+    --FoodGames.disableSkill(pl, 1, "MagKneeToe")
     local isSkill2 = FoodGames.isActiveSkill("MagKneeToe", 2)
     if not isSkill2 then
         return 
     end
-    print('doShotgun2')
+    --print('doShotgun2')
+
     if not  FoodGames.isZombieNearby(pl, rad) then return end
     pl:playSound("MagKneeToe_Skill2")
     addSound(pl, pl:getX(), pl:getY(),pl:getZ(), SandboxVars.FoodGames.SkillRadius2, 1);
@@ -132,18 +132,18 @@ function FoodGames.doDmg(zed, skillNum)
     local pl = getPlayer()
     if not pl or not zed or not zed:isAlive() then return end
 
-    if FoodGames.consumeEnergy(pl,skillNum) then
-        zed:setAttackedBy(pl)
-        local dmg = ZombRand(min, max)
-        zed:setHealth(zed:getHealth() - dmg)
-        zed:playSound("KatanaHit")
-        if FoodGames.doRoll(50) then
-            zed:setHitReaction("ShotBelly")
-        else
-            zed:setKnockedDown(true)
-        end
+    zed:setAttackedBy(pl)
+    local dmg = ZombRand(min, max)
+    zed:setHealth(zed:getHealth() - dmg)
+    zed:playSound("KatanaHit")
+    if FoodGames.doRoll(50) then
+        zed:setHitReaction("ShotBelly")
+    else
+        zed:setKnockedDown(true)
     end
+
     FoodGames.checkEnergyAndDisable(pl, skillNum)
+  
 end
 
 function FoodGames.doAoE(skillNum)
@@ -181,9 +181,10 @@ function FoodGames.doAoE(skillNum)
 
     for i = 1, math.min(maxZedCount, #sorted) do
         pl:startMuzzleFlash()
-        FoodGames.doDmg(sorted[i].zed, skillNum)
+        if FoodGames.consumeEnergy(pl,skillNum) then
+            FoodGames.doDmg(sorted[i].zed, skillNum)
+        end
     end
-
     FoodGames.doPulse(pl:getCurrentSquare() , rad, skillNum)
 end
 

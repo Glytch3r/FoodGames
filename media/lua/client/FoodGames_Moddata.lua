@@ -222,7 +222,13 @@ function FoodGames.consumeEnergy(pl, skillNum, mode)
     else
         cost = SandboxVars.FoodGames.CalConsume or 500
     end
+
     local energy = FoodGames.getEnergy(pl, mode)
+    if (pl:HasTrait("MagKneeToe") and mode == "MagKneeToe") then
+        energy = data["StoredMetal"]
+    elseif (pl:HasTrait("HomeLender") and mode == "HomeLender") or (pl:HasTrait("Wolferine") and mode == "Wolferine") then
+        energy = data["StoredCalories"]
+    end
     energy = math.max(0,  energy - cost)
     FoodGames.checkEnergyAndDisable(pl, 1, mode)
     return true
