@@ -234,11 +234,15 @@ function FoodGamesPanel:onSkill(skillNum)
 
     local isActive = FoodGames.isActiveSkill(tostring(self.mode), skillNum)
     local sfx = "UIActivateMainMenuItem"
-   
-    if not isActive then
+    if isActive then
+        sfx = FoodGames.sfxTable_Off[tostring(self.mode)]
+        FoodGames.disableAllSkills()
+    elseif not isActive then
         if not self.player:HasTrait(trait) then return end
         if FoodGames.isHasEnergy(self.player, skillNum, self.mode) then 
-            sfx = FoodGames.sfxTable_On[tostring(self.mode)]            
+            sfx = FoodGames.sfxTable_On[tostring(self.mode)]     
+            FoodGames.disableAllSkills()
+
             FoodGames.setActiveSkill(self.mode, skillNum, true)   
             if self.mode == "MagKneeToe" then
                 if skillNum == 1 then
@@ -258,10 +262,7 @@ function FoodGamesPanel:onSkill(skillNum)
                 FoodGames.getDamage(self.player)
             end
       
-        end      
-    else
-        FoodGames.disableAllSkills()
-        sfx = FoodGames.sfxTable_Off[tostring(self.mode)]
+        end     
     end
     getSoundManager():playUISound(sfx)
     

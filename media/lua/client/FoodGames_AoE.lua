@@ -74,13 +74,29 @@ function FoodGames.isZombieNearby(pl, rad)
 
     return false
 end
+
+function FoodGames.isRestrictCast(pl)
+    pl = pl or getPlayer()
+    
+    local allowed = not SandboxVars.FoodGames.MagKneeToeBarehands 
+        or tostring(WeaponType.getWeaponType(pl)) == "barehand"
+
+    if not allowed then
+        FoodGames.disableSkill(pl, 1, "MagKneeToe")
+        FoodGames.disableSkill(pl, 2, "MagKneeToe")
+    end
+
+    return allowed
+end
+
+
 function FoodGames.doShotgun()
     local pl = getPlayer()
     local mode = FoodGames.getMode()
     local data = FoodGames.getData()
     if not pl or not mode then return end
     if not (pl:HasTrait("MagKneeToe") and mode == "MagKneeToe") then return end
-    if not tostring(WeaponType.getWeaponType(pl)) == "barehand" then return end
+    if FoodGames.isRestrictCast(pl) then return end
 
     local isSkill1 = FoodGames.isActiveSkill("MagKneeToe", 1)
     
@@ -99,10 +115,16 @@ end
 
 function FoodGames.doShotgun2()
     local pl = getPlayer()
+
     local mode = FoodGames.getMode()
     if not pl or not mode then return end
-    if not (pl:HasTrait("MagKneeToe") and mode == "MagKneeToe") then return end
-    if not tostring(WeaponType.getWeaponType(pl)) == "barehand" then return end
+    if FoodGames.isRestrictCast(pl) then return end
+    
+    if not (pl:HasTrait("MagKneeToe") and mode == "MagKneeToe") then 
+        FoodGames.disableSkill(pl, 1, "MagKneeToe")
+        FoodGames.disableSkill(pl, 2, "MagKneeToe")
+        return
+    end
     --FoodGames.disableSkill(pl, 1, "MagKneeToe")
     local isSkill2 = FoodGames.isActiveSkill("MagKneeToe", 2)
     if not isSkill2 then
@@ -110,7 +132,7 @@ function FoodGames.doShotgun2()
     end
     --print('doShotgun2')
 
-    if not  FoodGames.isZombieNearby(pl, rad) then return end
+    if not FoodGames.isZombieNearby(pl, rad) then return end
     pl:playSound("MagKneeToe_Skill2")
     addSound(pl, pl:getX(), pl:getY(),pl:getZ(), SandboxVars.FoodGames.SkillRadius2, 1);
     FoodGames.doAoE(2)
@@ -149,7 +171,7 @@ end
 function FoodGames.doAoE(skillNum)
     local pl = getPlayer()
     if not pl then return end
-
+    if not FoodGames.isUnarmedCast(pl) then return end
     local maxZedCount = SandboxVars.FoodGames.MaxHitCount1
     local rangeLimit = SandboxVars.FoodGames.SkillRadius1
 

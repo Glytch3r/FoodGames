@@ -33,23 +33,26 @@ FoodGames = FoodGames or {}
 function FoodGames.doHealRandPart(pl)
     pl = pl or getPlayer()
     if not pl:HasTrait("Wolferine") then return end
-    
-   -- local consume = SandboxVars.FoodGames.CalConsume or 500
 
     local mode = FoodGames.getMode()
     local data = FoodGames.getData()
     mode = tostring(mode)
-    if mode ~= "Wolferine" then return end
-    if FoodGames.isHasEnergy(pl, 1, mode) then
-        if FoodGames.isActiveSkill(mode, 1) then
-            if FoodGames.hasAnyInjury(pl) then
-                if FoodGames.HealRandPart(pl) then
-                    FoodGames.consumeEnergy(pl, 1, mode)
-                end
-            end            
-        end
+    if mode ~= "Wolferine" then
+        FoodGames.disableSkill(pl, 1, "Wolferine")
+        return
     end
+
+    if not FoodGames.isHasEnergy(pl, 1, mode)
+        or not FoodGames.isActiveSkill(mode, 1)
+        or not FoodGames.hasAnyInjury(pl)
+        or not FoodGames.consumeEnergy(pl, 1, mode) then
+        FoodGames.disableSkill(pl, 1, "Wolferine")
+        return
+    end
+
+    FoodGames.HealRandPart(pl)
 end
+
 
 function FoodGames.hasAnyInjury(pl)
     pl = pl or getPlayer()
