@@ -189,7 +189,7 @@ function FoodGames.isHasEnergy(pl, skillNum, mode)
     pl = pl or getPlayer()
     if not pl then return false end
     skillNum = skillNum or 1
-    mode = mode or FoodGames.getMode(pl)
+    mode = mode or tostring(FoodGames.getMode(pl))
     local charge = FoodGames.getEnergy(pl, mode)
     local cost = 0
     if mode == "MagKneeToe" then 
@@ -203,6 +203,7 @@ function FoodGames.isHasEnergy(pl, skillNum, mode)
     end
     return cost <= charge
 end
+
 
 function FoodGames.consumeEnergy(pl, skillNum, mode)
     pl = pl or getPlayer()
@@ -229,7 +230,12 @@ function FoodGames.consumeEnergy(pl, skillNum, mode)
     elseif (pl:HasTrait("HomeLender") and mode == "HomeLender") or (pl:HasTrait("Wolferine") and mode == "Wolferine") then
         energy = data["StoredCalories"]
     end
-    energy = math.max(0,  energy - cost)
+    if (pl:HasTrait("MagKneeToe") and mode == "MagKneeToe") then
+        data["StoredMetal"] = math.max(0, data["StoredMetal"] - cost)
+    elseif (pl:HasTrait("HomeLender") and mode == "HomeLender") or (pl:HasTrait("Wolferine") and mode == "Wolferine") then
+        data["StoredCalories"] = math.max(0, data["StoredCalories"] - cost)
+    end
+
     FoodGames.checkEnergyAndDisable(pl, 1, mode)
     return true
 end
@@ -277,7 +283,7 @@ function FoodGames.setActiveSkill(mode, skillNum, val)
     if not pl then return end
     val = val or true
     mode = mode or FoodGames.getMode(pl) or FoodGames.getDefaultMode(pl) or nil
-    FoodGames.disableAllSkills()
+    --FoodGames.disableAllSkills()
     local fg = FoodGames.getData()
     fg[tostring(mode)][skillNum] = val
     FoodGames.checkEnergyAndDisable(pl, skillNum) 

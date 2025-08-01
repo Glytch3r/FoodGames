@@ -42,17 +42,21 @@ function FoodGames.doHealRandPart(pl)
         return
     end
 
-    if not FoodGames.isHasEnergy(pl, 1, mode)
-        or not FoodGames.isActiveSkill(mode, 1)
-        or not FoodGames.hasAnyInjury(pl)
-        or not FoodGames.consumeEnergy(pl, 1, mode) then
+    if not FoodGames.isHasEnergy(pl, 1, mode) then
         FoodGames.disableSkill(pl, 1, "Wolferine")
         return
     end
-
+    
     FoodGames.HealRandPart(pl)
 end
 
+function FoodGames.tickWolferine()
+    local pl = getPlayer()
+    if pl and FoodGames.isActiveSkill("Wolferine", 1) then
+        FoodGames.doHealRandPart(pl)
+    end
+end
+Events.EveryTenMinutes.Add(FoodGames.tickWolferine)
 
 function FoodGames.hasAnyInjury(pl)
     pl = pl or getPlayer()
@@ -84,6 +88,7 @@ Events.OnPlayerGetDamage.Add(FoodGames.getDamage)
 function FoodGames.HealRandPart(pl)
     pl = pl or getPlayer()
     local healable = {}
+    if not FoodGames.isActiveSkill("Wolferine", 1) then return end
 
     local bodyParts = pl:getBodyDamage():getBodyParts()
     for i = 0, bodyParts:size() - 1 do
@@ -197,6 +202,9 @@ function FoodGames.HealRandPart(pl)
     if #healable == 0 then
         return false
     end
+
+    FoodGames.consumeEnergy(pl, 1, "Wolferine")
+
 
     local injury = healable[ZombRand(#healable) + 1]
     injury.func(injury.part)

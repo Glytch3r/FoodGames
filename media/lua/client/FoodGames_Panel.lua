@@ -140,11 +140,13 @@ function FoodGamesPanel:update()
     local hasTrait = self.player:HasTrait(tostring(self.mode))
     self._lastButtonMode = self.mode
 
-    local isEnabled_1 = FoodGames.isHasEnergy(self.player, 1)
-    local isEnabled_2 = FoodGames.isHasEnergy(self.player, 2)
+    local isEnabled_1 = FoodGames.isHasEnergy(self.player, 1, self.mode)
+    local isEnabled_2 = FoodGames.isHasEnergy(self.player, 2, self.mode)
 
     self.Btn_Skill_1:setEnable(isEnabled_1)
-    self.Btn_Skill_2:setEnable(isEnabled_2)    
+    self.Btn_Skill_2:setEnable(isEnabled_2) 
+
+
 --[[ 
 
     if not hasTrait then
@@ -157,11 +159,12 @@ function FoodGamesPanel:update()
     self.activeSkill_1 = FoodGames.getActiveSkillStr(tostring(self.mode), 1)   
     self.activeSkill_2 = FoodGames.getActiveSkillStr(tostring(self.mode), 2)   
 
-
-
+    
+    
     self.Btn_Skill_1:setImage(getTexture("media/ui/Icon_" .. tostring(self.activeSkill_1) .. "_" .. tostring(self.mode) .. ".png"))
 
     local isMag = tostring( self.mode )== "MagKneeToe"
+
     self.Btn_Skill_2:setVisible(isMag)
     if isMag then
         self.Btn_Skill_2:setImage(getTexture("media/ui/Icon_" .. tostring(self.activeSkill_2) .. "_" .. tostring(self.mode) .. ".png"))
@@ -183,20 +186,10 @@ function FoodGamesPanel:update()
 end
 
 
-  --  self.Btn_Skill_1:setImage( getTexture("media/ui/Icon_On_" .. self.mode .. ".png"))
-
---[[     print(FoodGames.isActiveSkill(self.mode, 1))
-    print(FoodGames.isActiveSkill(self.mode, 2)) ]]
-
-   -- self.EnergySlider.texBtnLeft = self.arrowLeft
-   -- self.EnergySlider.texBtnRight = self.arrowRight
-    --self.EnergySlider.sliderBarColor = self:getColor()
-    --self.EnergySlider.sliderMouseOverColor = { r = 1, g = 1, b = 1, a = 1 }
-
-
 -----------------------            ---------------------------
 function FoodGamesPanel:onArrowLeft()
 	if not FoodGames.isHero(self.player) then return end
+    FoodGames.disableAllSkills()
     self.modeIndex = self.modeIndex - 1
     if self.modeIndex < 1 then self.modeIndex = #self.modes end
     self.mode = self.modes[self.modeIndex]
@@ -212,6 +205,7 @@ end
 
 function FoodGamesPanel:onArrowRight()
 	if not FoodGames.isHero(self.player) then return end
+    FoodGames.disableAllSkills()
     self.modeIndex = self.modeIndex + 1
     if self.modeIndex > #self.modes then self.modeIndex = 1 end
     self.mode = self.modes[self.modeIndex]
@@ -226,11 +220,9 @@ end
 
 
 -----------------------            ---------------------------
-
 function FoodGamesPanel:onSkill(skillNum)
     skillNum = skillNum or 1
     local trait = tostring(self.mode)
-
 
     local isActive = FoodGames.isActiveSkill(tostring(self.mode), skillNum)
     local sfx = "UIActivateMainMenuItem"
@@ -241,32 +233,27 @@ function FoodGamesPanel:onSkill(skillNum)
         if not self.player:HasTrait(trait) then return end
         if FoodGames.isHasEnergy(self.player, skillNum, self.mode) then 
             sfx = FoodGames.sfxTable_On[tostring(self.mode)]     
-            FoodGames.disableAllSkills()
-
-            FoodGames.setActiveSkill(self.mode, skillNum, true)   
+            FoodGames.setActiveSkill(self.mode, skillNum, true)
             if self.mode == "MagKneeToe" then
-                if skillNum == 1 then
-                    if FoodGames.consumeEnergy(self.player ,1) then
-                        FoodGames.doShotgun()  
+                if skillNum == 2 then
+                    if FoodGames.consumeEnergy(self.player, 2, self.mode) then
+                        FoodGames.doShotgun2()
+                        self.Btn_Skill_1:setEnable(false)
+                        self.Btn_Skill_2:setEnable(false)
+                        timer:Simple(1.5, function()
+                            FoodGames.disableSkill(self.player, 2, "MagKneeToe")
+                            self.Btn_Skill_1:setEnable(true)
+                            self.Btn_Skill_2:setEnable(true)
+                        end)
                     end
-                    self.Btn_Skill_1:setEnable(false)
-                    self.Btn_Skill_2:setEnable(false)
-                    timer:Simple(1.5, function()
-                        FoodGames.disableSkill(self.player, 1, "MagKneeToe")
-                        FoodGames.disableSkill(self.player, 2, "MagKneeToe")
-                        self.Btn_Skill_1:setEnable(true)
-                        self.Btn_Skill_2:setEnable(true)      
-                    end)
                 end
             elseif self.mode == "Wolferine" then
-                FoodGames.getDamage(self.player)
+                FoodGames.doHealRandPart(self.player)
             end
-      
         end     
     end
     getSoundManager():playUISound(sfx)
-    
-    
+    print(self.mode)
 end
 
 -----------------------            ---------------------------
