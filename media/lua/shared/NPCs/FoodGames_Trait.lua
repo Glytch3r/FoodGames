@@ -9,6 +9,8 @@ Events.OnGameBoot.Add(function()
 	TraitFactory.addTrait(traitStr, getText("UI_trait_"..traitStr), 2, getText("UI_trait_"..traitStr.."_desc"), false)
 	local traitStr = "MagKneeToe"
 	TraitFactory.addTrait(traitStr, getText("UI_trait_"..traitStr), 2, getText("UI_trait_"..traitStr.."_desc"), false)
+	local traitStr = "GameBet"
+	TraitFactory.addTrait(traitStr, getText("UI_trait_"..traitStr), 2, getText("UI_trait_"..traitStr.."_desc"), false)
 
 	TraitFactory.sortList()
 	local traits = TraitFactory.getTraits()

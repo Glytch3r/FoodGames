@@ -158,10 +158,10 @@ function ISEatFoodAction:handleFoodGamesCaloriesAfterEat(isPerform)
     playerMd['FoodGames'] = playerMd['FoodGames'] or {}
     playerMd['FoodGames']['consumedCalories'] = playerMd['FoodGames']['consumedCalories'] or 0
     local consumedCaloriesSnapshot = playerMd['FoodGames']['consumedCalories']
-    local daysOfCaloriesSnapshot = math.floor(consumedCaloriesSnapshot / SandboxVars.FoodGames.DailyCalories)
+    local daysOfCaloriesSnapshot = math.floor(consumedCaloriesSnapshot / SandboxVars.FoodGames.DailyMaxCalories)
 	print('[FoodGames] DEBUG: daysOfCaloriesSnapshot: ' .. daysOfCaloriesSnapshot)
     playerMd['FoodGames']['consumedCalories'] = playerMd['FoodGames']['consumedCalories'] + consumedCalories
-    local newDaysOfCalories = math.floor(playerMd['FoodGames']['consumedCalories'] / SandboxVars.FoodGames.DailyCalories)
+    local newDaysOfCalories = math.floor(playerMd['FoodGames']['consumedCalories'] / SandboxVars.FoodGames.DailyMaxCalories)
 	print('[FoodGames] DEBUG: newDaysOfCalories: ' .. newDaysOfCalories)
 	print('[FoodGames] Player Consumed Calories: ' .. playerMd['FoodGames']['consumedCalories'])
     local daysChange = newDaysOfCalories - daysOfCaloriesSnapshot

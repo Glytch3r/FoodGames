@@ -1,0 +1,54 @@
+
+
+module Base
+{
+
+
+	model CardSheet
+	{
+		mesh = Newspaper,
+		texture = WorldItems/CardSheet,
+	}
+	model CardSheet_G
+	{
+		mesh = WorldItems/Map,
+		texture = WorldItems/CardSheet,
+		scale = 0.6,
+	}
+    item CardSheet
+    {
+        DisplayName	= Sheet of Cards,
+        DisplayCategory = Material,
+        Weight	=	0.4,
+        Type	=	Literature,
+        Icon	=	CardSheet,
+        StaticModel = CardSheet,
+        WorldStaticModel = CardSheet_G,
+
+    }
+
+	
+	model PlayCardSheet
+	{
+		mesh = Newspaper,
+		texture = WorldItems/PlayCardSheet,
+	}
+	model PlayCardSheet_G
+	{
+		mesh = WorldItems/Map,
+		texture = WorldItems/PlayCardSheet,
+		scale = 0.6,
+	}
+    item PlayCardSheet
+    {
+        DisplayName	=	Sheet of Playing Cards,
+        DisplayCategory = Material,
+        Weight	=	0.4,
+        Type	=	Literature,
+        Icon	=	PlayCardSheet,
+        StaticModel = PlayCardSheet,
+        WorldStaticModel = PlayCardSheet_G,
+
+    }
+
+}

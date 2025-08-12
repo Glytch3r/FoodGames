@@ -1,0 +1,182 @@
+
+
+module Base
+{
+
+
+
+    recipe Craft Sheet of Paper
+	{
+        Base.Mov_CardboardBox,
+		Category:FoodGames,
+		Result:Base.SheetPaper2=10,	
+		Time:80.0,
+		AnimNode:Disassemble,
+		Prop1:Source=2,
+		Prop2:Source=1,
+		
+	}
+  
+	recipe Craft Sheet of Paper
+	{
+		Notebook/Journal/PaperBag/Lunchbag/Paperbag_Spiffos/Paperbag_Jays/Tote,
+		Result:Base.SheetPaper2=5,	
+		Category:FoodGames,
+
+		Time:80.0,
+		AnimNode:RipSheets,
+		Sound:ClothesRipping,
+		Prop1:Source=2,
+		Prop2:Source=1,		
+	}
+
+	recipe Craft Sheet of Paper
+	{
+		Newspaper/Magazine,
+		Category:FoodGames,
+		Result:Base.SheetPaper2=25,	
+
+		Time:80.0,
+		AnimNode:RipSheets,
+		Sound:ClothesRipping,
+		Prop1:Source=2,
+		Prop2:Source=1,		
+	}
+
+	recipe Craft Sheet of Paper
+	{
+		Book,
+		Category:FoodGames,
+		Result:Base.SheetPaper2=75,	
+		Time:80.0,
+		AnimNode:RipSheets,
+		Sound:ClothesRipping,
+		Prop1:Source=2,
+		Prop2:Source=1,		
+	}
+
+	recipe Craft Sheet of Paper
+	{
+		Newspaper/Magazine,
+		Category:FoodGames,
+		Result:Base.SheetPaper2=25,	
+
+		Time:80.0,
+		AnimNode:RipSheets,
+		Sound:ClothesRipping,
+		Prop1:Source=2,
+		Prop2:Source=1,		
+	}
+
+
+
+    recipe Craft Sheet of Paper
+	{
+		Tissue/ToiletPaper/PaperNapkins/Doodle,
+		Tissue/ToiletPaper/PaperNapkins/Doodle,
+
+		keep [Recipe.GetItemTypes.Glue]=1,
+		Category:FoodGames,
+		Result:Base.SheetPaper2,	
+		Time:80.0,
+		AnimNode:Disassemble,
+		Prop1:Source=2,
+		Prop2:Source=1,
+	}
+	recipe Craft Sheet of Paper
+	{
+		Tissue/ToiletPaper/PaperNapkins/Doodle,
+		Tissue/ToiletPaper/PaperNapkins/Doodle,
+		keep [Recipe.GetItemTypes.Tape]=1,
+		Category:FoodGames,
+		Result:Base.SheetPaper2,	
+		Time:80.0,
+		AnimNode:Disassemble,
+		Prop1:Source=2,
+		Prop2:Source=1,
+	}
+
+
+
+
+
+
+    recipe Craft Glue
+	{
+		[Recipe.GetItemTypes.StartFire]/[Recipe.GetItemTypes.Lighter],
+		Gum/RubberBand/Eraser,
+		Category:FoodGames,
+		Result:Base.Glue,	
+		Time:80.0,
+		AnimNode:Disassemble,
+		Prop1:Source=2,
+		Prop2:Source=1,
+		Sound:UseLighter,
+		
+	}
+
+    recipe Craft Glue
+	{
+		[Recipe.GetItemTypes.StartFire]/[Recipe.GetItemTypes.Lighter],
+		Rubberducky2/Rubberducky,
+		Category:FoodGames,
+		Result:Base.Glue,	
+		Time:80.0,
+		AnimNode:Disassemble,
+		Prop1:Source=2,
+		Prop2:Source=1,
+		Sound:UseLighter,		
+	}
+
+
+	recipe Craft Sheet of Cards
+	{
+		SheetPaper2=2,
+		[Recipe.GetItemTypes.Glue]/[Recipe.GetItemTypes.Tape],
+		Category:FoodGames,
+		Result:Base.CardSheet,		
+		Time:80.0,
+		AnimNode:Disassemble,
+		Prop1:Source=2,
+		Prop2:Source=1,
+	}
+
+
+	recipe Craft Sheet of Playing Card
+	{
+		destroy [Recipe.GetItemTypes.Write],		
+		Base.CardSheet,
+		Category:FoodGames,
+		Result:Base.PlayCardSheet,
+		Time:80.0,
+		Prop2:Source=2,		
+		Prop1:Source=1,		
+	}
+	recipe Craft Sheet of Playing Card
+	{
+		keep PaintRed/PaintBlack/PaintBlue/PaintBrown/PaintCyan/PaintGreen/PaintGrey/PaintLightBlue/PaintLightBrown/PaintOrange/PaintPink/PaintPurple/PaintTurquoise/PaintWhite/PaintYellow,		
+		Base.CardSheet,
+		Category:FoodGames,
+		Result:Base.PlayCardSheet,
+		OnCreate:Recipe.OnCreate.PaintCard,
+		Time:160.0,
+		Prop2:Source=2,		
+	}
+
+
+	recipe Craft Deck of Cards
+	{
+		Base.PlayCardSheet=6,
+		keep [Recipe.GetItemTypes.Razor]/[Recipe.GetItemTypes.DullKnife]/[Recipe.GetItemTypes.SharpKnife]/[Recipe.GetItemTypes.Scissors],
+		Category:FoodGames,
+		Result:Base.CardDeck,
+		Time:160.0,
+		OnTest:Recipe.OnTest.CutCheck,
+		OnCreate:Recipe.OnCreate.BreakCheck,
+		AnimNode:RipSheets,
+		Sound:ClothesRipping,
+		Prop1:Source=2,
+		Prop2:Source=1,		
+	}
+
+}

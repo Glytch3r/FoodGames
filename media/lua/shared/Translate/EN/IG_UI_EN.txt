@@ -1,0 +1,4 @@
+IGUI_EN = {
+    IGUI_CraftCategory_FoodGames = "FoodGames",
+    IGUI_ItemCat_FoodGames = "FoodGames",
+}

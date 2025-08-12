@@ -74,7 +74,10 @@ function FoodGames.isZombieNearby(pl, rad)
 
     return false
 end
-
+function FoodGames.isUnarmed(pl)
+    return tostring(WeaponType.getWeaponType(pl)) == 'barehand'
+end
+--[[ 
 function FoodGames.isRestrictCast(pl)
     pl = pl or getPlayer()
     
@@ -82,7 +85,7 @@ function FoodGames.isRestrictCast(pl)
     local isBarehand = tostring(WeaponType.getWeaponType(pl)) == "barehand"
 
     local allowed = (not barehandsOnly) or (barehandsOnly and isBarehand)
-
+    
     if not allowed then
         FoodGames.disableSkill(pl, 1, "MagKneeToe")
         FoodGames.disableSkill(pl, 2, "MagKneeToe")
@@ -90,54 +93,64 @@ function FoodGames.isRestrictCast(pl)
 
     return allowed
 end
+ ]]
 -----------------------            ---------------------------
 function FoodGames.doShotgun()
     local pl = getPlayer()
     if not pl then return end
-    if not FoodGames.isRestrictCast(pl) then return end
-
-    FoodGames.disableSkill(pl, 2, "MagKneeToe")
-    if not (pl:HasTrait("MagKneeToe") and FoodGames.getMode() == "MagKneeToe") then         
-        FoodGames.disableSkill(pl, 1, "MagKneeToe")
+    if not FoodGames.isUnarmed(pl) then return end
+    
+    local mode = FoodGames.getMode()
+    if not mode then return end
+    FoodGames.disableSkill(pl, 2, mode)
+    if not (pl:HasTrait(mode) and FoodGames.getMode() == mode) then         
+        FoodGames.disableSkill(pl, 1, mode)
         return
     end
 
-    if not FoodGames.isActiveSkill("MagKneeToe", 1) then return end
-    if not FoodGames.isZombieNearby(pl, SandboxVars.FoodGames.SkillRadius1) then return end
+    if not FoodGames.isActiveSkill(mode, 1) then return end
+    local rad =  FoodGames.getRad(mode, 1)
+    
+    if  FoodGames.isZombieNearby(pl, rad) then   
+        FoodGames.doAoE(1)  
+    end
+  
 
-
-    --addSound(pl, pl:getX(), pl:getY(), pl:getZ(), SandboxVars.FoodGames.SkillRadius1, 1)
-    FoodGames.doAoE(1) 
+    --addSound(pl, pl:getX(), pl:getY(), pl:getZ(), SandboxVars.FoodGames.MetalSkillRadius1, 1)
+  
 end
 
 Events.EveryOneMinute.Add(FoodGames.doShotgun)
 
+
+
 function FoodGames.doShotgun2()
     local pl = getPlayer()
     if not pl then return end
-    if not FoodGames.isRestrictCast(pl) then return end
-
+    if not FoodGames.isUnarmed(pl) then return end
+    
+    local skillNum = 2 
     local mode = FoodGames.getMode()
-    FoodGames.disableSkill(pl, 1, "MagKneeToe")
+    FoodGames.disableSkill(pl, 1, mode)
 
-    if not (pl:HasTrait("MagKneeToe") and mode == "MagKneeToe") then         
-        FoodGames.disableSkill(pl, 2, "MagKneeToe")
+    if not (pl:HasTrait(mode) and mode == FoodGames.getMode()) then         
+        FoodGames.disableSkill(pl, 2, mode)
         return
     end
 
-    if not FoodGames.isActiveSkill("MagKneeToe", 2) then return end
-
-    if not FoodGames.consumeEnergy(pl, 2, "MagKneeToe") then
-        FoodGames.disableSkill(pl, 2, "MagKneeToe")
+    if not FoodGames.isActiveSkill(mode, skillNum) then return end
+    
+    if not FoodGames.isHasEnergy(pl, skillNum) then
+        FoodGames.disableSkill(pl, skillNum, mode)
         return
     end
 
-    local rad = SandboxVars.FoodGames.SkillRadius2
-    FoodGames.doAoE(2)
-    FoodGames.doPulse(pl:getCurrentSquare(), rad, 2)
+    local rad = FoodGames.getRad(mode, skillNum)
+    FoodGames.doAoE(skillNum)
+    FoodGames.doPulse(pl:getCurrentSquare(), rad, skillNum)
 
-    timer:Simple(1, function() 
-        FoodGames.disableSkill(pl, 2, "MagKneeToe")
+    timer:Simple(1.5, function() 
+        FoodGames.disableSkill(pl, skillNum, mode)
     end)
 end
 -----------------------            ---------------------------
@@ -150,21 +163,38 @@ end
 function FoodGames.doDmg(zed, skillNum)
     local pl = getPlayer()
     if not pl or not zed or not zed:isAlive() then return end
-
+    
     local min, max, rad
-    if skillNum == 2 then
-        min = SandboxVars.FoodGames.MinZedDmg2
-        max = SandboxVars.FoodGames.MaxZedDmg2
-        rad = SandboxVars.FoodGames.SkillRadius2
-    else
-        min = SandboxVars.FoodGames.MinZedDmg1
-        max = SandboxVars.FoodGames.MaxZedDmg1
-        rad = SandboxVars.FoodGames.SkillRadius1
-        FoodGames.doPulse(pl:getCurrentSquare(), rad, 1)
-    end
+    local dmg = 0
+    local isMagKneeToe = FoodGames.getMode() == "MagKneeToe"
+    local isGameBet = FoodGames.getMode() == "GameBet"
 
+    if isMagKneeToe then
+        if skillNum == 2 then
+            min = SandboxVars.FoodGames.MetalMinZedDmg2
+            max = SandboxVars.FoodGames.MetalMaxZedDmg2
+            rad = SandboxVars.FoodGames.MetalSkillRadius2
+            dmg =   ZombRand(min, max)
+        else
+            min = SandboxVars.FoodGames.MetalMinZedDmg1
+            max = SandboxVars.FoodGames.MetalMaxZedDmg1
+            rad = SandboxVars.FoodGames.MetalSkillRadius1
+            dmg =   ZombRand(min, max)
+            FoodGames.doPulse(pl:getCurrentSquare(), rad, 1)
+        end
+    elseif isGameBet then
+        if skillNum == 2 then    
+            dmg = SandboxVars.FoodGames.CardsZedDmg2
+            rad = SandboxVars.FoodGames.CardsSkillRadius2
+        else
+            dmg = SandboxVars.FoodGames.CardsZedDmg1
+            rad = SandboxVars.FoodGames.CardsSkillRadius1
+            FoodGames.doPulse(pl:getCurrentSquare(), rad, 1)
+        end
+    else
+        return
+    end
     zed:setAttackedBy(pl)
-    local dmg = ZombRand(min, max)
     zed:setHealth(zed:getHealth() - dmg)
     zed:playSound("KatanaHit")
 
@@ -174,18 +204,54 @@ function FoodGames.doDmg(zed, skillNum)
         zed:setKnockedDown(true)
     end
 end
+-----------------------            ---------------------------
+function FoodGames.getMultiHitCount(mode, skillNum)
+    mode = mode or FoodGames.getMode()
+    if not mode or not FoodGames.isDualSkilled(mode) then return 0 end
+    local sData = SandboxVars.FoodGames
+    local tab = {
+        MagKneeToe = {
+            [1] = sData.MetalMaxHitCount1,
+            [2] = sData.MaxMetalHitCount2,
+        },
+        GameBet = {
+            [1] = sData.CardsMaxHitCount1,
+            [2] = sData.CardsMaxHitCount2,
+        },
+    }
+    return tab[mode] and tab[mode][skillNum] or 0
+end
+
+function FoodGames.getRad(mode, skillNum)
+    mode = mode or FoodGames.getMode()
+    if not mode or not FoodGames.isDualSkilled(mode) then return 0 end
+    local sData = SandboxVars.FoodGames
+    local tab = {
+        GameBet = {
+            [1] = sData.CardsSkillRadius1,
+            [2] = sData.CardsSkillRadius2,
+        },
+        MagKneeToe = {
+            [1] = sData.MetalSkillRadius1,
+            [2] = sData.MetalSkillRadius2,
+        },
+    }
+    return tab[mode] and tab[mode][skillNum] or 0
+end
+
 
 -----------------------            ---------------------------
+
 function FoodGames.doAoE(skillNum)
     local pl = getPlayer()
-    if not pl or not FoodGames.isRestrictCast(pl) then return end
+    if not pl or not FoodGames.isUnarmed(pl) then return end
+    skillNum = skillNum or 1
+    local mode = FoodGames.getMode()
+    local maxZedCount = FoodGames.getMultiHitCount(mode, skillNum)
+    local rangeLimit =  FoodGames.getRad(mode, skillNum)        
 
-    local maxZedCount = SandboxVars.FoodGames.MaxHitCount1
-    local rangeLimit = SandboxVars.FoodGames.SkillRadius1
-    if skillNum == 2 then
-        maxZedCount = SandboxVars.FoodGames.MaxHitCount2
-        rangeLimit = SandboxVars.FoodGames.SkillRadius2
-    end
+    if not FoodGames.isDualSkilled(mode) then return end
+    
 
     local x, y, z = pl:getX(), pl:getY(), pl:getZ()
     local zombies = getCell():getZombieList()
@@ -207,23 +273,18 @@ function FoodGames.doAoE(skillNum)
     end
 
     table.sort(sorted, function(a, b) return a.distSq < b.distSq end)
-
-    for i = 1, math.min(maxZedCount, #sorted) do
-        if skillNum == 1 then
-            if FoodGames.consumeEnergy(pl, 1, "MagKneeToe") then
-                pl:startMuzzleFlash()
+    for i = 1, math.min(maxZedCount, #sorted) do 
+        if FoodGames.isHasEnergy(pl, skillNum) then
+            pl:startMuzzleFlash()
+            if FoodGames.consumeEnergy(pl, skillNum, mode) then
                 FoodGames.doDmg(sorted[i].zed, 1)
-            else
-                FoodGames.disableSkill(pl, 1, "MagKneeToe")
-                break
             end
         else
-            pl:startMuzzleFlash()
-            FoodGames.doDmg(sorted[i].zed, 2)
+            FoodGames.disableSkill(pl, skillNum, mode)
+            break
         end
     end
 end
-
 
 -----------------------            ---------------------------
 
@@ -232,17 +293,21 @@ function FoodGames.doPulse(sq, rad, skillNum)
     local pl = getPlayer()
     if not pl or not isIngameState() then return end
     skillNum = skillNum or 1
-    if skillNum == 2 then
-        pl:playSound("MagKneeToe_Skill2")
-    else
-        pl:playSound("MagKneeToe_Skill1")
+
+    local isGameBet = FoodGames.getMode() == "GameBet"
+    local str = "MagKneeToe_Skill"
+
+    if isGameBet then
+        str = "GameBet_Skill"
     end
+    local sfx = tostring(str)..tostring(skillNum)
+    pl:playSound(sfx)
     addSound(pl, pl:getX(), pl:getY(), pl:getZ(), rad, 1)
 
     sq = sq or pl:getCurrentSquare()
     local col = { r = 0.86, g = 0.36, b = 0.89 }
 
-    -- Use skillNum-specific marker/timer to avoid overlap between skills
+
     FoodGames.animTimer = FoodGames.animTimer or {}
     FoodGames.marker = FoodGames.marker or {}
 

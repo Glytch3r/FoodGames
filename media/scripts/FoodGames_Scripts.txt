@@ -82,7 +82,6 @@ module Base
         clip { file = media/sound/Wolferine_ToggleOn.ogg,   distanceMax = 1500, is3D = true, volume = 0.5, }
     }
 
-
 	sound MagKneeToe_Skill1
     {
         category = UI,
@@ -102,6 +101,26 @@ module Base
         clip { file = media/sound/MagKneeToe_Store.ogg,   distanceMax = 1500, is3D = true, volume = 0.5, }
     }
 
+
+
+	sound GameBet_Skill1
+    {
+        category = UI,
+        clip { file = media/sound/GameBet_Skill1.ogg,   distanceMax = 1500, is3D = true, volume = 0.5, }
+    }
+
+
+	sound GameBet_Skill2
+    {
+        category = UI,
+        clip { file = media/sound/GameBet_Skill2.ogg,   distanceMax = 1500, is3D = true, volume = 0.5, }
+    }
+
+    sound GameBet_Store
+    {
+        category = UI,
+        clip { file = media/sound/GameBet_Store.ogg,   distanceMax = 1500, is3D = true, volume = 0.5, }
+    }
 
 
 }

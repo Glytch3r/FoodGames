@@ -2,6 +2,8 @@ FoodGames = FoodGames or {}
 
 
 function FoodGames.getMetalValue(item)
+    if not item then return end
+    
     local vMult = SandboxVars.FoodGames.MetalMultiplier or 0.5
     local wMult = SandboxVars.FoodGames.MetalWeightMultiplier or 3.5
     local list = SandboxVars.FoodGames.MetalValues or ""

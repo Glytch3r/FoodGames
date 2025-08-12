@@ -49,4 +49,3 @@ Events.OnClientCommand.Add(function(module, command, player, args)
 	end
 end)
 
-

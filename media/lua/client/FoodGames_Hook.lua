@@ -96,9 +96,9 @@ function FoodGames.init()
         playerMd['FoodGames'] = playerMd['FoodGames'] or {}
         playerMd['FoodGames']['StoredCalories'] = playerMd['FoodGames']['StoredCalories'] or 0
         local StoredCaloriesSnapshot = playerMd['FoodGames']['StoredCalories']
-        local daysOfCaloriesSnapshot = math.floor(StoredCaloriesSnapshot / SandboxVars.FoodGames.DailyCalories)
+        local daysOfCaloriesSnapshot = math.floor(StoredCaloriesSnapshot / SandboxVars.FoodGames.DailyMaxCalories)
         playerMd['FoodGames']['StoredCalories'] = playerMd['FoodGames']['StoredCalories'] + StoredCalories
-        local newDaysOfCalories = math.floor(playerMd['FoodGames']['StoredCalories'] / SandboxVars.FoodGames.DailyCalories)
+        local newDaysOfCalories = math.floor(playerMd['FoodGames']['StoredCalories'] / SandboxVars.FoodGames.DailyMaxCalories)
         local daysChange = newDaysOfCalories - daysOfCaloriesSnapshot
 
         if dbg then

@@ -1,8 +1,12 @@
 UI_EN = {
+    UI_optionscreen_binding_Food Games Skill 1 = " Food Games Skill 1",
+    UI_optionscreen_binding_Food Games Skill 2 = " Food Games Skill 2",
 	UI_trait_HomeLender = "HomeLender",
 	UI_trait_HomeLender_desc = "HomeLender",
 	UI_trait_Wolferine = "Wolferine",
 	UI_trait_Wolferine_desc = "Wolferine",
 	UI_trait_MagKneeToe = "MagKneeToe",
 	UI_trait_MagKneeToe_desc = "MagKneeToe",
+	UI_trait_GameBet = "GameBet",
+	UI_trait_GameBet_desc = "GameBet",
 }

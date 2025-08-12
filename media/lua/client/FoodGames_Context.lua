@@ -29,6 +29,75 @@
 -----------------------            ---------------------------
 FoodGames = FoodGames or {}
 -----------------------            ---------------------------
+
+-----------------------            ---------------------------
+function FoodGames.context(player, context, worldobjects, test)
+	local pl = getSpecificPlayer(player)
+	local sq = clickedSquare
+	local targ = clickedPlayer
+	local obj = nil
+	if not sq then return end
+
+	if not FoodGames.isHero(pl) then return end
+    -- getPlayer():getModData()["FoodGames"] = nil
+	--FoodGames.dataInit() 
+
+
+    local data = FoodGames.getData(pl)    
+    local mode = FoodGames.getMode(pl) or pl:getModData()['FoodGames']['Mode'] or  FoodGames.getDefaultMode(pl)
+
+    local csq = pl:getCurrentSquare()
+    if not mode then
+		return
+    end
+
+	if csq == sq or getCore():getDebug() then
+
+        local optTip = context:addOptionOnTop("Food Games", worldobjects, function()
+            FoodGames.open()
+            getSoundManager():playUISound("UIActivateMainMenuItem")
+            context:hideAndChildren()
+        end)
+
+	
+        local ico = "media/ui/FG_Off.png"
+        if mode == "HomeLender" then
+            ico = "media/ui/FG_HomeLender.png"
+        elseif mode == "Wolferine" then
+            ico = "media/ui/FG_Wolferine.png"
+        elseif mode == "MagKneeToe" then
+            ico = "media/ui/FG_MagKneeToe.png"
+        elseif mode == "GameBet" then
+            ico = "media/ui/FG_GameBet.png"
+        end
+
+
+        optTip.iconTexture = getTexture(ico)
+        local tip = ISWorldObjectContextMenu.addToolTip()
+        tip:setTexture(ico)
+        local calories = data['StoredCalories']
+        local metal = data['StoredMetal']
+        local cards = data['StoredCards']
+		local storedFood = FoodGames.convertDaysToYMD(tonumber(calories)) or ""
+		
+		
+        tip.description = "Hero Mode:\n"..tostring(mode).."\n\n"..
+		"Consumed Calories:\n"..tostring(calories).."\n\n"..
+		"Stored Food:\n"..tostring(storedFood).."\n\n"..
+		"Stored Metal:\n"..tostring(metal).."\n\n"..
+		"Stored Cards:\n"..tostring(cards).."\n\n"
+
+
+        optTip.toolTip = tip
+
+    end
+
+end
+Events.OnFillWorldObjectContextMenu.Remove(FoodGames.context)
+Events.OnFillWorldObjectContextMenu.Add(FoodGames.context)
+
+-----------------------            ---------------------------
+
 --[[
 function FoodGames.invContext(playerNum, context, worldObjects, test)
 	if test then return end
@@ -95,61 +164,3 @@ Events.OnFillWorldObjectContextMenu.Add(FoodGames.invContext)
 
 Events.OnFillInventoryObjectContextMenu.Remove(FoodGames.invPanelContext)
 Events.OnFillInventoryObjectContextMenu.Add(FoodGames.invPanelContext) ]]
-
------------------------            ---------------------------
-function FoodGames.context(player, context, worldobjects, test)
-	local pl = getSpecificPlayer(player)
-	local sq = clickedSquare
-	local targ = clickedPlayer
-	local obj = nil
-	if not sq then return end
-
-	if not FoodGames.isHero(pl) then return end
---[[     getPlayer():getModData()["FoodGames"] = nil
-FoodGames.dataInit() ]]
-
-    local data = FoodGames.getData(pl)    
-    local mode = FoodGames.getMode(pl) or pl:getModData()['FoodGames']['Mode'] or  "HomeLender"
-
-    local csq = pl:getCurrentSquare()
-    if not mode then
-		return
-    end
-
-	if csq == sq or getCore():getDebug() then
-
-        local optTip = context:addOptionOnTop("Food Games", worldobjects, function()
-            FoodGames.open()
-            getSoundManager():playUISound("UIActivateMainMenuItem")
-            context:hideAndChildren()
-        end)
-
-	
-        local ico = "media/ui/FG_Off.png"
-        if mode == "HomeLender" then
-            ico = "media/ui/FG_HomeLender.png"
-        elseif mode == "Wolferine" then
-            ico = "media/ui/FG_Wolferine.png"
-        elseif mode == "MagKneeToe" then
-            ico = "media/ui/FG_MagKneeToe.png"
-        end
-
-
-        optTip.iconTexture = getTexture(ico)
-        local tip = ISWorldObjectContextMenu.addToolTip()
-        tip:setTexture(ico)
-        local calories = data['StoredCalories']
-        local metal = data['StoredMetal']
-		local storedFood = FoodGames.convertDaysToYMD(tonumber(calories)) or ""
-
-
-        tip.description = "Hero Mode:\n"..tostring(mode).."\n\n".."Consumed Calories:\n"..tostring(calories).."\n\n".."Stored Food:\n"..tostring(storedFood).."\n\n".."Stored Metal:\n"..tostring(metal)
-        optTip.toolTip = tip
-
-    end
-
-end
-Events.OnFillWorldObjectContextMenu.Remove(FoodGames.context)
-Events.OnFillWorldObjectContextMenu.Add(FoodGames.context)
-
------------------------            ---------------------------

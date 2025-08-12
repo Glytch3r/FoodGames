@@ -1,0 +1,69 @@
+	--Batch 04 Start (GameBet)---
+
+Gambit (GameBet)
+very similar to MagKneeToe, (but instead of throwing stored metal, he throws "Stored Cards")
+he gets "Stored Cards" by consuming a few items mentioned below, which he can either find in game, or by crafting them from paper items, with pens/pencils and glue etc, via some new crafting recipes :o)
+
+
+main idea is to obtain "Stored Cards", and use some recipes to convert spare 'Pens' and 'Pencils' with 'Sheets Of Paper' into 'Pack Of Playing Cards' (Base.CardDeck).
+
+while MagKneeToe consumed a bunch of metal items in his bag, GameBet instead just consumes a few items:
+( consuming each pack of playing cards 'Base.CardDeck' gives GameBet 54 "Stored Cards" (52+2joker) )
+( consuming each pack of playing cards 'Base.TarotCardDeck' gives GameBet 78 "Stored Cards" )
+( consuming 'Base.BusinessCard_Personal' or 'Base.BusinessCard_Nolans' or 'Base.BusinessCard' gives him 1 "Stored Card" ) 
+
+
+
+1st skill throws 3 "stored cards" (lower damage, in lower radius) (like magneto)
+2nd skill throws 10 "stored cards" (more damage, in larger radius) (like magneto)
+(customisable in sandbox values etc)
+
+
+
+
+definition of existing glue items:
+glue (Base.Glue)  OR  duct tape (Base.Scotchtape) OR adhesive tape (Base.DuctTape)
+
+
+definitions of existing writing items are:
+Base.Pencil OR Base.Pen OR Base.RedPen OR Base.BluePen OR Base.Crayons (if one of these items is used in crafting, the whole item is completely used and removed)
+
+PAINT: (if one of the below is used, it only drains it by 10%)
+PaintRed,PaintBlack,PaintBlue,PaintBrown,PaintCyan,PaintGreen,PaintGrey,PaintLightBlue,PaintLightBrown,PaintOrange,PaintPink, PaintPurple, PaintTurquoise, PaintWhite, PaintYellow, 
+
+
+
+New Crafting Recipes: (need to be able to rightclick on the 1st items, to get the crafting menu, Not the fire source because that has a huge list which lags)
+(and if items need a recipe name, it can just be generic like "Make FoodGames Glue", "Make FoodGames Paper", "Make FoodGames CardSheet"
+
+1x (Gum OR RubberBand OR Base.Eraser) + 1 use of lighter / matches etc https://pzwiki.net/wiki/StartFire_(tag) = Base.Glue (has i think 5 uses)
+1x (Rubberducky OR Rubberducky2) + 1 lighter / matches etc = 2x Base.Glue
+
+2x Tissue + 1 unit of any glue (Base.Glue)  OR  duct tape (Base.Scotchtape) OR adhesive tape (Base.DuctTape) = 'Sheet of Paper' (i think it's Base.SheetPaper2)
+
+2x Base.ToiletPaper + any 1 glue (Base.Glue)  OR  duct tape (Base.Scotchtape) OR adhesive tape (Base.DuctTape) = Sheet of Paper
+
+2x 'Sheet of Paper' + 1 unit of any 'glue (Base.Glue)  OR  duct tape (Base.Scotchtape) OR adhesive tape (Base.DuctTape)' = "Sheet of Card" (NEW item)
+
+1x Sheet of Card + any Base.Pencil OR Base.Pen OR Base.RedPen OR Base.BluePen OR Base.Crayons  = "Sheet of Playing Card" (NEW item)
+1x Sheet of Card + any PAINT (10% drained) = "Sheet of Playing Card"
+
+6x Sheet of Playing Card + Scissors (using Base.Scissors 10% durability or 1 condition = full pack of playing cards (Base.CardDeck)
+
+(assuming 10% condition is used if scissors have 10 max condition = each full condition scissors can make 10 packs of playing cards before those Scissors break)
+(if player does not have scissors, another recipe exists which uses any bladed weapon, short/long blade, but lowers its condition by 20% or 2 condition)
+
+Base.Card_Easter OR Base.SheetPaper2 OR PaperNapkins OR Base.Doodle = craft 1 Sheet of Paper
+
+Base.Notebook , Base.Journal ,   Base.PaperBag ,  Base.Lunchbag  , Paperbag_Spiffos , Paperbag_Jays, Base.Tote (tote bag) = craft 5 Sheet of Paper
+
+Base.Mov_CardboardBox = Craft 10 Sheet of Paper
+
+Base.Newspaper, Base.Magazine = Craft 25 Sheet of Paper
+
+Base.Book = Craft 50 Sheet of Paper (this crafting recipe needs a custom Sandbox Option, because i might need to test this with 75 pages per basic book or 100 pages etc)
+
+note: there are tons of items_literature.txt books and skill books and magazines, but if easier we can just use magazine and the basic Base.Book red book for now?
+
+
+---Batch 04 End (GameBet)---

@@ -1,11 +1,96 @@
 
 FoodGames = FoodGames or {}
 
+FoodGames.CircleRadius = 0.5
+
+FoodGames.colorList = {
+    ["HomeLender"] = { r = 0.8, g = 0.3, b = 0.3, a = 1 },
+    ["Wolferine"] = { r = 0.76, g = 0.7, b = 0.4,  a = 1 },
+    ["MagKneeToe"] = { r = 0.86, g = 0.36, b = 0.89, a = 1},
+    ["GameBet"] = { r = 0.99, g = 0.32, b = 0.64, a = 1 },
+}
+FoodGames.modeIndex = {
+    [1]="HomeLender",
+    [2]="Wolferine",
+    [3]="MagKneeToe",
+    [4]="GameBet",
+}
 function FoodGames.isTargCont(targCont)
     local plNum = getPlayer():getPlayerNum() or 0
     return getPlayerLoot(plNum).inventoryPane.inventory == targCont
 end
+function FoodGames.getHeroColor(mode)
+    mode = mode or FoodGames.getMode()    
+    return FoodGames.colorList[mode] or { r = 1, g = 1, b = 1, a = 1 }
+end
 
+function FoodGames.MarkerHandler()
+
+    if FoodGames.skillMarker then
+        FoodGames.skillMarker:remove(); FoodGames.skillMarker = nil
+    end
+
+    local pl = getPlayer()
+    if not pl then return end
+    local csq = pl:getCurrentSquare() 
+    local mode = FoodGames.getMode()    
+    if not mode then return end
+  
+    if not SandboxVars.FoodGames.SkillIndicator  then return end
+    local col = FoodGames.getHeroColor(mode)
+    if col and csq then 
+        if FoodGames.isActiveSkill(mode, 1) or FoodGames.isActiveSkill(mode, 2)  then          
+            FoodGames.skillMarker = getWorldMarkers():addGridSquareMarker("circle_center", "circle_only_highlight", csq, col.r, col.g, col.b, true, 0.6);
+        end
+    end
+
+end
+Events.OnPostRender.Remove(FoodGames.MarkerHandler)
+Events.OnPostRender.Add(FoodGames.MarkerHandler)
+-----------------------            ---------------------------
+function FoodGames.getCurIndex(mode)
+    local modes = FoodGames.modesStr
+    for i, v in ipairs(modes) do
+        if v == mode then
+            return i
+        end
+    end
+    return nil
+end
+
+function FoodGames.getIndexMode(int)
+    return FoodGames.modeIndex[int]
+end
+function FoodGames.getNextMode(pl)
+    pl = pl or getPlayer()
+    local modes = FoodGames.modesStr
+    local mode = FoodGames.getMode()
+    local curIndex = FoodGames.getCurIndex(mode)
+    curIndex = curIndex + 1
+    if curIndex > #modes then curIndex = 1 end
+    local mode = modes[curIndex]
+    if not pl:HasTrait(tostring(mode)) then
+        return FoodGames.getNextMode(pl, modes, curIndex)
+    end
+    return curIndex, mode
+end
+
+function FoodGames.getPrevMode(pl)
+    pl = pl or getPlayer()
+    local modes = FoodGames.modesStr
+    local mode = FoodGames.getMode()
+    local curIndex = FoodGames.getCurIndex(mode)
+    curIndex = curIndex - 1
+    if curIndex < 1 then curIndex = #modes end
+    local mode = modes[curIndex]
+    if not pl:HasTrait(tostring(mode)) then
+        return FoodGames.getPrevMode(pl, modes, curIndex)
+    end
+    return curIndex, mode
+end
+
+
+-----------------------            ---------------------------
 function FoodGames.isActiveCont(obj)
     local cont = obj:getContainer()
     if not cont then return false end
