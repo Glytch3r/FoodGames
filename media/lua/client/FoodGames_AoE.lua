@@ -97,7 +97,8 @@ end
 -----------------------            ---------------------------
 function FoodGames.doShotgun()
     local pl = getPlayer()
-    if not pl then return end
+	if not pl or not FoodGames.isHero(pl) then return end
+
     if not FoodGames.isUnarmed(pl) then return end
     
     local mode = FoodGames.getMode()

@@ -310,19 +310,28 @@ end
 -----------------------            ---------------------------
 function FoodGames.checkEnergyAndDisable(pl, skillNum, mode)
     pl = pl or getPlayer()
-    if not pl then return end
+	if not pl or not FoodGames.isHero(pl) then return end
+
     skillNum = skillNum or 1
     mode = mode or FoodGames.getMode(pl) 
+    if not mode then return end
+    if not skillNum then return end
+
     local data = FoodGames.getData(pl)
     if not FoodGames.isHasEnergy(pl, skillNum, mode) then
         FoodGames.disableSkill(pl, skillNum, mode)
     end
 end
+
 function FoodGames.disableSkill(pl, skillNum, mode)
     pl = pl or getPlayer()
-    if not pl then return end
+	if not pl or not FoodGames.isHero(pl) then return end
+
     mode = mode or FoodGames.getMode(pl) 
+    if not mode then return end
     skillNum = skillNum or 1
+    if not skillNum then return end
+
     local data = FoodGames.getData(pl)   
     if data then
         data[tostring(mode)][skillNum] = false
@@ -331,7 +340,8 @@ end
 
 function FoodGames.disableAllSkills()
     local pl = getPlayer()
-    if not pl then return end
+	if not pl or not FoodGames.isHero(pl) then return end
+
     for _, mode in pairs(FoodGames.modesStr) do
         if FoodGames.isActiveSkill(tostring(mode), 1) then
             FoodGames.disableSkill(pl, 1, tostring(mode))

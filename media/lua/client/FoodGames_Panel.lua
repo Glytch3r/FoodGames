@@ -258,7 +258,7 @@ function FoodGamesPanel:onSliderChange(val, _slider)
         end
     end
 
-    getSoundManager():playUISound("UIActivateButton")
+    --getSoundManager():playUISound("UIActivateButton")
 end
 
 
