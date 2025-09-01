@@ -25,6 +25,12 @@ function FoodGamesPanel:getColor()
     return {r=col.r,g=col.g,b=col.b,a=col.a}
 end
 
+FoodGames.modesStr = {
+    "HomeLender",
+    "Wolferine",
+    "MagKneeToe",
+    "GameBet",
+}
 FoodGames.sfxTable_On = {
     ["HomeLender"] = "HomeLander_ToggleOn",
     ["Wolferine"] = "Wolferine_ToggleOn",
@@ -49,7 +55,7 @@ end
 function FoodGamesPanel:createChildren()
     ISCollapsableWindow.createChildren(self)
     self.modes = FoodGames.modesStr
-
+    
 --[[     self.data = self.player:getModData()['FoodGames']
     self.mode = getMode() ]]
 
@@ -547,9 +553,11 @@ function FoodGamesPanel:prerender()
     self.Btn_Skill_2:setEnable(FoodGames.isActiveSkill(self.mode, 2))
     
 
-    self.arrowLeft.tooltip = FoodGames.getIndexMode(tostring(FoodGames.getPrevMode()))
-    self.arrowRight.tooltip = FoodGames.getIndexMode(tostring(FoodGames.getNextMode())) 
-    
+    local prevIndex, prevMode = FoodGames.getPrevMode(self.player, self.modeIndex)
+    local nextIndex, nextMode = FoodGames.getNextMode(self.player, self.modeIndex)
+    self.arrowLeft.tooltip = prevMode
+    self.arrowRight.tooltip = nextMode
+
     local col = self:getColor()
     self:update()
     self.header = self:drawTextCentre(self.headStr, self.width/2, 4, col.r,  col.g,  col.b, 1, self.headerFont)

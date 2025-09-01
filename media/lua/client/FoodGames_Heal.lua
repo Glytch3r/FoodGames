@@ -32,34 +32,52 @@ FoodGames = FoodGames or {}
 
 function FoodGames.doHealRandPart(pl)
     pl = pl or getPlayer()
+   
+    if not pl or not FoodGames.isHero(pl) then return end
     local mode = FoodGames.getMode()
-    local data = FoodGames.getData()    
-    if mode ~= "Wolferine"  or not pl:HasTrait("Wolferine") or not not FoodGames.isHasEnergy(pl, 1, mode) then 
+    if not mode then return end
+
+    if mode ~= "Wolferine" or not pl:isAlive() or not FoodGames.isActiveSkill("Wolferine", 1) or not FoodGames.isHasEnergy(pl, 1, mode) then 
         FoodGames.disableSkill(pl, 1, "Wolferine")
-        return 
+    elseif FoodGames.hasAnyInjury(pl) then
+        FoodGames.HealRandPart(pl)
     end    
-    FoodGames.HealRandPart(pl)
 end
 
-function FoodGames.tickWolferine()
-    local pl = getPlayer()
-    if pl and FoodGames.isActiveSkill("Wolferine", 1) then
+
+local ticks = 0
+function FoodGames.tickWolferine(pl)
+    pl = pl or getPlayer()
+    if not pl or not FoodGames.isHero(pl) then return end
+    ticks = ticks + 1
+    if ticks % 50 == 0 then
         FoodGames.doHealRandPart(pl)
     end
 end
-Events.EveryTenMinutes.Add(FoodGames.tickWolferine)
+Events.OnPlayerUpdate.Add(FoodGames.tickWolferine)
 
 function FoodGames.hasAnyInjury(pl)
     pl = pl or getPlayer()
     local bodyParts = pl:getBodyDamage():getBodyParts()
-    for i = 1, bodyParts:size() do
-        local bp = bodyParts:get(i - 1)
-        if bp:HasInjury() 
-            or bp:bandaged() 
-            or bp:stitched() 
-            or bp:getSplintFactor() > 0 
-            or bp:getAdditionalPain() > 10 
-            or bp:getStiffness() > 5 then
+    for i = 0, bodyParts:size() - 1 do
+        local bp = bodyParts:get(i)
+        if bp:HasInjury()
+        or bp:bandaged()
+        or bp:stitched()
+        or bp:getSplintFactor() > 0
+        or bp:getAdditionalPain() > 10
+        or bp:getStiffness() > 5
+        or bp:getScratchTime() > 0
+        or bp:isCut()
+        or (bp:isDeepWounded() and bp:getDeepWoundTime() > 0)
+        or bp:bitten()
+        or bp:bleeding()
+        or bp:isInfectedWound()
+        or bp:haveBullet()
+        or bp:haveGlass()
+        or bp:getFractureTime() > 0
+        or bp:getBurnTime() > 0
+        then
             return true
         end
     end
@@ -67,19 +85,9 @@ function FoodGames.hasAnyInjury(pl)
 end
 
 
-function FoodGames.getDamage(pl, dmgType, dmg)
-    if not pl:HasTrait("Wolferine") then return end
-    local mode = FoodGames.getMode()
-    if not mode then return end
-    if mode ~= "Wolferine" then return end
-    FoodGames.doHealRandPart(pl)
-end
-Events.OnPlayerGetDamage.Add(FoodGames.getDamage)
-
 function FoodGames.HealRandPart(pl)
     pl = pl or getPlayer()
     local healable = {}
-    if not FoodGames.isActiveSkill("Wolferine", 1) then return end
 
     local bodyParts = pl:getBodyDamage():getBodyParts()
     for i = 0, bodyParts:size() - 1 do
@@ -123,7 +131,8 @@ function FoodGames.HealRandPart(pl)
             })
         end
 
-        if part:bleeding() then
+
+        if part:getBleedingTime() > 0 then
             table.insert(healable, {
                 part = part, label = "Bleeding", func = function(p)
                     p:setBleedingTime(0)
@@ -167,7 +176,6 @@ function FoodGames.HealRandPart(pl)
             })
         end
 
-
         if part:getFractureTime() > 0 then
             table.insert(healable, {
                 part = part, label = "Fracture", func = function(p)
@@ -181,13 +189,9 @@ function FoodGames.HealRandPart(pl)
                 part = part, label = "Burn", func = function(p)
                     p:setNeedBurnWash(false)
                     p:setBurnTime(0)
-
                 end
             })
         end
-
-
-
     end
 
     local isShowAlert = SandboxVars.FoodGames.InjuryHealOverheadMessage or true
@@ -195,7 +199,6 @@ function FoodGames.HealRandPart(pl)
         return false
     end
 
-    FoodGames.consumeEnergy(pl, 1, "Wolferine")
 
 
     local injury = healable[ZombRand(#healable) + 1]
@@ -206,9 +209,11 @@ function FoodGames.HealRandPart(pl)
         print(msg)
         pl:addLineChatElement(tostring(msg))
     end
+    
+    FoodGames.consumeEnergy(pl, 1, "Wolferine")
+    FoodGames.checkEnergyAndDisable(pl, 1, "Wolferine")
     return true
 end
-
 
 
 

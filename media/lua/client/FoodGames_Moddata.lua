@@ -6,12 +6,7 @@ FoodGames.modeList = {
     ["MagKneeToe"] = true,
     ["GameBet"] = true,
 }
-FoodGames.modesStr = {
-    "HomeLender",
-    "Wolferine",
-    "MagKneeToe",
-    "GameBet",
-}
+
 FoodGames.modesNum = {
     ["HomeLender"] = 1,
     ["Wolferine"] = 2,
@@ -255,8 +250,6 @@ function FoodGames.getCost(pl, skillNum, mode)
     mode = mode or tostring(FoodGames.getMode(pl))
     local charge = FoodGames.getEnergy(pl, mode)
     local cost = 0
-
-
     if mode == "GameBet" then 
         cost = 1
     elseif mode == "MagKneeToe" then 
@@ -270,8 +263,6 @@ function FoodGames.getCost(pl, skillNum, mode)
     end
     return cost 
 end
-
-
 function FoodGames.consumeEnergy(pl, skillNum, mode)
     pl = pl or getPlayer()
     if not pl then return end
@@ -279,14 +270,15 @@ function FoodGames.consumeEnergy(pl, skillNum, mode)
 
     local data = FoodGames.getData(pl)
     mode = mode or FoodGames.getMode(pl)
-    local cost = 0
+
+    local cost = FoodGames.getCost(pl, skillNum, mode) or 0
+
     if not FoodGames.isHasEnergy(pl, skillNum, mode) then 
         FoodGames.disableSkill(pl, skillNum, mode)        
         return false 
     end
 
     local energy = FoodGames.getEnergy(pl, mode)
-    FoodGames.getCost(pl, skillNum, mode)
 
     if (pl:HasTrait("GameBet") and mode == "GameBet") then
         energy = data["StoredCards"]
@@ -295,18 +287,21 @@ function FoodGames.consumeEnergy(pl, skillNum, mode)
     elseif (pl:HasTrait("HomeLender") and mode == "HomeLender") or (pl:HasTrait("Wolferine") and mode == "Wolferine") then
         energy = data["StoredCalories"]
     end
+
     if (pl:HasTrait("GameBet") and mode == "GameBet") then
-        data["StoredMetal"] = math.max(0, data["StoredMetal"] - cost)
+        data["StoredCards"] = math.max(0, data["StoredCards"] - cost)
     elseif (pl:HasTrait("MagKneeToe") and mode == "MagKneeToe") then
         data["StoredMetal"] = math.max(0, data["StoredMetal"] - cost)
     elseif (pl:HasTrait("HomeLender") and mode == "HomeLender") or (pl:HasTrait("Wolferine") and mode == "Wolferine") then
         data["StoredCalories"] = math.max(0, data["StoredCalories"] - cost)
     end
 
-    FoodGames.checkEnergyAndDisable(pl, 1, mode)
+    FoodGames.checkEnergyAndDisable(pl, skillNum, mode)
     return true
 end
-
+--[[ 
+FoodGames.consumeEnergy(getPlayer(), 1, "Wolferine")
+ ]]
 -----------------------            ---------------------------
 function FoodGames.checkEnergyAndDisable(pl, skillNum, mode)
     pl = pl or getPlayer()
