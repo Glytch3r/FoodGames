@@ -23,6 +23,21 @@ Recipe.OnCreate = Recipe.OnCreate or {}
 Recipe.OnGiveXP = Recipe.OnGiveXP or {}
 Recipe.OnTest = Recipe.OnTest or {}
 
+function Recipe.OnTest.isGameBet(item)
+   return getPlayer():HasTrait("GameBet")
+end
+
+
+
+function Recipe.OnCreate.ConsumeCards()
+   local pl = getPlayer() 
+   if pl and pl and pl:HasTrait("GameBet") then
+      local modData = pl:getModData()['FoodGames']      
+      local maxCards = SandboxVars.FoodGames.MaxCardsQty
+      modData['StoredCards'] =  math.min(maxCards, (modData['StoredCards'] or 0) + 54)
+   end
+end
+
 
 function FoodGames.isCutter(item)
     if not item then return false end

@@ -179,4 +179,20 @@ module Base
 		Prop2:Source=1,		
 	}
 
+	
+	recipe Consume Cards
+	{
+		Base.CardDeck,
+		Category:FoodGames,
+		Result:Base.CardDeck,
+		Time:160.0,
+		OnTest:Recipe.OnTest.isGameBet,
+		OnCreate:Recipe.OnCreate.ConsumeCards,
+		AnimNode:RipSheets,
+		Sound:ClothesRipping,
+		RemoveResultItem:true,
+
+	}
+
 }
+
