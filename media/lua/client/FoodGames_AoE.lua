@@ -181,16 +181,19 @@ function FoodGames.doAoE(skillNum)
     if not pl then return end
     local mode = FoodGames.getMode(pl)
 
-    local rad
-    if mode == "MagKneeToe" then
-        rad = SandboxVars.FoodGames.MetalSkillRadius2
-    elseif mode == "GameBet" then
-        rad = SandboxVars.FoodGames.CardsSkillRadius2
-    else
+    local rad = FoodGames.getRad(mode, skillNum)
+    if rad <= 0 then return end
+
+    if not FoodGames.consumeEnergy(pl, skillNum, mode) then
+        FoodGames.disableSkill(pl, skillNum, mode)
         return
     end
 
-    FoodGames.doPulse(pl:getCurrentSquare(), rad, skillNum)
+    if skillNum == 2 then
+        FoodGames.doPulse(pl:getCurrentSquare(), rad, 2)
+    elseif skillNum == 1 and FoodGames.isZombieNearby(pl, rad) then
+        FoodGames.doPulse(pl:getCurrentSquare(), rad, 1)
+    end
 
     local zeds = getCell():getZombieList()
     for i = 0, zeds:size() - 1 do

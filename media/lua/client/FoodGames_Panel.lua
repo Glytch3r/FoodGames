@@ -304,16 +304,6 @@ function FoodGames.onSkill(skillNum)
     skillNum = skillNum or 1
     local mode = FoodGames.getMode(pl)
     local isActive = FoodGames.isActiveSkill(mode, skillNum)
-    if skillNum == 2 then
-        if  FoodGames.isHasEnergy(pl, 2) then
-            FoodGames.disableAllSkills()
-            FoodGames.setActiveSkill(mode, 2, true)
-            timer:Simple(1, function() 
-                FoodGames.disableAllSkills()
-            end)
-        end
-    end
-    local sfx = "UIActivateMainMenuItem"
 
     if not FoodGames.isHasEnergy(pl, skillNum) then
         FoodGames.disableSkill(pl, skillNum, mode)
@@ -324,39 +314,46 @@ function FoodGames.onSkill(skillNum)
     local isGameBet = mode == "GameBet"
     local isDualSkill = FoodGames.isDualSkilled(mode)
 
-    if (isMagKneeToe or isGameBet) and skillNum == 2 then
-        if not pl:HasTrait(mode) then return end
-        if not FoodGames.consumeEnergy(pl, skillNum) then return end
-        FoodGames.doAoE(skillNum)
-        getSoundManager():playUISound(FoodGames.sfxTable_On[mode])
-        return
-    end
-
     if isDualSkill then
         local otherSkill = FoodGames.getOtherSkill(skillNum)
-        local otherActive = FoodGames.isActiveSkill(mode, otherSkill)
-        if otherActive then
+        if FoodGames.isActiveSkill(mode, otherSkill) then
             FoodGames.disableSkill(pl, otherSkill, mode)
         end
     end
 
+    if (isMagKneeToe or isGameBet) and skillNum == 2 then
+        if not pl:HasTrait(mode) then return end
+        if not FoodGames.consumeEnergy(pl, skillNum, mode) then
+            FoodGames.disableSkill(pl, skillNum, mode)
+            return
+        end
+        local rad
+        if isMagKneeToe then
+            rad = SandboxVars.FoodGames.MetalSkillRadius2
+        else
+            rad = SandboxVars.FoodGames.CardsSkillRadius2
+        end
+        FoodGames.doPulse(pl:getCurrentSquare(), rad, 2)
+        FoodGames.doAoE(2)
+        FoodGames.setActiveSkill(mode, skillNum, false)
+        getSoundManager():playUISound(FoodGames.sfxTable_On[mode])
+        return
+    end
+
     if isActive then
-        sfx = FoodGames.sfxTable_Off[mode]
+        getSoundManager():playUISound(FoodGames.sfxTable_Off[mode])
         FoodGames.disableAllSkills()
     else
         if not pl:HasTrait(mode) then return end
-        sfx = FoodGames.sfxTable_On[mode]
         if FoodGames.isHasEnergy(pl, skillNum) then
             if mode == "Wolferine" then
                 FoodGames.doHealRandPart(pl)
             end
             FoodGames.setActiveSkill(mode, skillNum, true)
+            getSoundManager():playUISound(FoodGames.sfxTable_On[mode])
         end
     end
-    getSoundManager():playUISound(sfx)
 end
-
-
 
 -----------------------            ---------------------------
 --[[ 
