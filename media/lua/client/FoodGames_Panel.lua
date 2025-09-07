@@ -1,3 +1,24 @@
+----------------------------------------------------------------
+-----  ▄▄▄   ▄    ▄   ▄  ▄▄▄▄▄   ▄▄▄   ▄   ▄   ▄▄▄    ▄▄▄  -----
+----- █   ▀  █    █▄▄▄█    █    █   ▀  █▄▄▄█  ▀  ▄█  █ ▄▄▀ -----
+----- █  ▀█  █      █      █    █   ▄  █   █  ▄   █  █   █ -----
+-----  ▀▀▀▀  ▀▀▀▀   ▀      ▀     ▀▀▀   ▀   ▀   ▀▀▀   ▀   ▀ -----
+----------------------------------------------------------------
+--                                                            --
+--   Project Zomboid Modding Commissions                      --
+--   https://steamcommunity.com/id/glytch3r/myworkshopfiles   --
+--                                                            --
+--   ▫ Discord  ꞉   glytch3r                                  --
+--   ▫ Support  ꞉   https://ko-fi.com/glytch3r                --
+--   ▫ Youtube  ꞉   https://www.youtube.com/@glytch3r         --
+--   ▫ Github   ꞉   https://github.com/Glytch3r               --
+--                                                            --
+----------------------------------------------------------------
+----- ▄   ▄   ▄▄▄   ▄   ▄   ▄▄▄     ▄      ▄   ▄▄▄▄  ▄▄▄▄  -----
+----- █   █  █   ▀  █   █  ▀   █    █      █      █  █▄  █ -----
+----- ▄▀▀ █  █▀  ▄  █▀▀▀█  ▄   █    █    █▀▀▀█    █  ▄   █ -----
+-----  ▀▀▀    ▀▀▀   ▀   ▀   ▀▀▀   ▀▀▀▀▀  ▀   ▀    ▀   ▀▀▀  -----
+----------------------------------------------------------------
 FoodGamesPanel = ISCollapsableWindow:derive("FoodGamesPanel")
 --[[ 
 function FoodGamesPanel:getColor()
@@ -238,16 +259,7 @@ function FoodGamesPanel:SliderUpdatePos()
     
     local max = FoodGames.getMaxEnergy(self.mode)
     self.EnergySlider.maxValue = max
---[[ 
-    if self.lastPlayer ~= self.player then
-        self.lastPlayer = self.player
-        local energy = FoodGames.getEnergy(self.player, self.mode)
-        self.EnergySlider:setValues(energy, 0, max, 1)
-    end
- ]]
---[[     local max = FoodGames.getMaxEnergy(self.mode)
-    local energy = FoodGames.getEnergy(self.player, self.mode)
-    self.EnergySlider:setValues(energy, 0, max, 1) ]]
+
 end
 -----------------------            ---------------------------
 function FoodGamesPanel:onSliderChange(val, _slider)
@@ -270,7 +282,7 @@ end
 
 -----------------------            ---------------------------
 function FoodGames.isDualSkilled(mode)
-    mode = mode or FoodGames.getMode(pl)
+    mode = mode or FoodGames.getMode()
     local tab = {
         ["MagKneeToe"] = true,
         ["GameBet"] = true,        
@@ -285,8 +297,69 @@ function FoodGames.getOtherSkill(skillNum)
     }
     return tab[skillNum]
 end
+-----------------------            ---------------------------
+function FoodGames.onSkill(skillNum)
+    local pl = getPlayer()
+    if not pl then return end
+    skillNum = skillNum or 1
+    local mode = FoodGames.getMode(pl)
+    local isActive = FoodGames.isActiveSkill(mode, skillNum)
+    if skillNum == 2 then
+        if  FoodGames.isHasEnergy(pl, 2) then
+            FoodGames.disableAllSkills()
+            FoodGames.setActiveSkill(mode, 2, true)
+            timer:Simple(1, function() 
+                FoodGames.disableAllSkills()
+            end)
+        end
+    end
+    local sfx = "UIActivateMainMenuItem"
+
+    if not FoodGames.isHasEnergy(pl, skillNum) then
+        FoodGames.disableSkill(pl, skillNum, mode)
+        return
+    end
+
+    local isMagKneeToe = mode == "MagKneeToe"
+    local isGameBet = mode == "GameBet"
+    local isDualSkill = FoodGames.isDualSkilled(mode)
+
+    if (isMagKneeToe or isGameBet) and skillNum == 2 then
+        if not pl:HasTrait(mode) then return end
+        if not FoodGames.consumeEnergy(pl, skillNum) then return end
+        FoodGames.doAoE(skillNum)
+        getSoundManager():playUISound(FoodGames.sfxTable_On[mode])
+        return
+    end
+
+    if isDualSkill then
+        local otherSkill = FoodGames.getOtherSkill(skillNum)
+        local otherActive = FoodGames.isActiveSkill(mode, otherSkill)
+        if otherActive then
+            FoodGames.disableSkill(pl, otherSkill, mode)
+        end
+    end
+
+    if isActive then
+        sfx = FoodGames.sfxTable_Off[mode]
+        FoodGames.disableAllSkills()
+    else
+        if not pl:HasTrait(mode) then return end
+        sfx = FoodGames.sfxTable_On[mode]
+        if FoodGames.isHasEnergy(pl, skillNum) then
+            if mode == "Wolferine" then
+                FoodGames.doHealRandPart(pl)
+            end
+            FoodGames.setActiveSkill(mode, skillNum, true)
+        end
+    end
+    getSoundManager():playUISound(sfx)
+end
 
 
+
+-----------------------            ---------------------------
+--[[ 
 function FoodGames.onSkill(skillNum)
     local pl = getPlayer(); 
     if not pl then return end 
@@ -331,7 +404,7 @@ function FoodGames.onSkill(skillNum)
     getSoundManager():playUISound(sfx)
     --print(self.mode)
 end
-
+ ]]
 
 --[[ function FoodGames.doDualSkill2Action(isMagKneeToe, isGameBet, mode)
     local pl = getPlayer(); if not pl then return end 
@@ -443,24 +516,6 @@ function FoodGamesPanel:render()
     self:update()
 end
 
------------------------            ---------------------------
---[[ 
-function FoodGamesPanel:drawTextWithBG(text, x, y, font)
-    local textWidth = getTextManager():MeasureStringX(font, text)
-    local textHeight = getTextManager():getFontHeight(font)
-    local col = FoodGames.colorList[self.mode]
-    local HeroColor = {r=col.r, g=col.g, b=col.b, a=col.a}
-    self.themeCol  =  { r = col.r, g = col.g, b = col.b, a=0.6 }    
-    if FoodGames.isActiveSkill(self.mode, 1) or FoodGames.isActiveSkill(self.mode, 2) then
-        self.backgroundColor  = { r = 0, g = 0, b = 0, a = 0.8}
-        self:drawRect(x - 2, y - 2, textWidth + 4, textHeight + 4, 0, 0, 0, 1)    
-        self:drawText(text, x, y,  1,1,1,1, font)
-    else
-        self.backgroundColor  = { r = 0.2, g = 0.2, b = 0.2, a = 0.4}
-        --self:drawRect(x - 2, y - 2, textWidth + 4, textHeight + 4, HeroColor.g, HeroColor.b, HeroColor.a)    
-        self:drawText(text, x, y, HeroColor.r, HeroColor.g, HeroColor.b, HeroColor.a, font)
-    end
-end ]]
 function FoodGamesPanel:drawTextWithBG(text, x, y, font)
     local lines = {}
     for line in string.gmatch(text, "([^\n]*)\n?") do
