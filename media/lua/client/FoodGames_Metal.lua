@@ -49,7 +49,7 @@ function FoodGames.consumeMetal(item)
     local val = FoodGames.getMetalValue(item)
     if val <= 0 then return end
 
-    local cap = SandboxVars.FoodGames.MaxMetalCapacity or 46080
+    local cap = SandboxVars.FoodGames.MetalCapacity or 46080
     local data = pl:getModData()['FoodGames']
     data['StoredMetal'] = math.max(0, math.min(cap, val + (data['StoredMetal'] or 0)))
 

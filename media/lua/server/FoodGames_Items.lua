@@ -33,7 +33,7 @@ function Recipe.OnCreate.ConsumeCards()
    local pl = getPlayer() 
    if pl and pl and pl:HasTrait("GameBet") then
       local modData = pl:getModData()['FoodGames']      
-      local maxCards = SandboxVars.FoodGames.MaxCardsQty
+      local maxCards = SandboxVars.FoodGames.CardsCapacity
       modData['StoredCards'] =  math.min(maxCards, (modData['StoredCards'] or 0) + 54)
    end
 end

@@ -34,7 +34,7 @@ function FoodGames.consumeCard(item)
     local val = FoodGames.getCardValue(item)
     if val <= 0 then return end
 
-    local cap = SandboxVars.FoodGames.MaxCardsQty or 46080
+    local cap = SandboxVars.FoodGames.CardsCapacity or 46080
     local data = pl:getModData()
     data['FoodGames'] = data['FoodGames'] or {}
     data['FoodGames']['StoredCards'] = math.max(0, math.min(cap, val + (data['FoodGames']['StoredCards'] or 0)))
@@ -68,7 +68,7 @@ function FoodGames.consumeAllCardsFromContainer(container, pl)
     local modData = pl:getModData()
     modData['FoodGames'] = modData['FoodGames'] or {}
     modData['FoodGames']['StoredCards'] = math.min(
-        SandboxVars.FoodGames.MaxCardsQty or 46080,
+        SandboxVars.FoodGames.CardsCapacity or 46080,
         (modData['FoodGames']['StoredCards'] or 0) + total
     )
 

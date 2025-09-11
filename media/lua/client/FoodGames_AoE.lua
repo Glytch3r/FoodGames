@@ -149,7 +149,7 @@ function FoodGames.getMultiHitCount(mode, skillNum)
     local tab = {
         ["MagKneeToe"]  = {
             [1] = sData.MetalMaxHitCount1,
-            [2] = sData.MaxMetalHitCount2,
+            [2] = sData.MetalHitCount2,
         },
         ["GameBet"] = {
             [1] = sData.CardsMaxHitCount1,

@@ -566,7 +566,7 @@ function FoodGamesPanel:prerender()
 
     if self.mode == "GameBet" then
         local cards = tonumber(self.data["StoredCards"]) or 0
-        local max = SandboxVars.FoodGames.MaxCardsQty or 46080
+        local max = SandboxVars.FoodGames.CardsCapacity or 46080
         self.EnergySlider.maxValue = max
         cards = math.max(0, math.min(max, cards))
         self:drawTextWithBG("Cards: \n" .. tostring(math.floor(cards)) .. " / " .. tostring(max), self.margin+4, self.sliderRow+self.margin+5, self.infoFont)
@@ -574,7 +574,7 @@ function FoodGamesPanel:prerender()
 
     elseif self.mode == "MagKneeToe" then
         local metal = tonumber(self.data["StoredMetal"]) or 0
-        local max = SandboxVars.FoodGames.MaxMetalCapacity or 46080
+        local max = SandboxVars.FoodGames.MetalCapacity or 46080
         self.EnergySlider.maxValue = max
         metal = math.max(0, math.min(max, metal))
         self:drawTextWithBG("Metal Stored: \n" .. tostring(math.floor(metal)) .. " / " .. tostring(max), self.margin+4, self.sliderRow+self.margin+5, self.infoFont)

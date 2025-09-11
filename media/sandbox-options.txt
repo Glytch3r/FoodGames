@@ -86,10 +86,10 @@ option FoodGames.MetalWeightMultiplier
     type = double, min = 0.00, max = 100, default = 3.5,
     page = FoodGames, translation = FoodGames_MetalWeightMultiplier,
 }
-option FoodGames.MaxMetalCapacity
+option FoodGames.MetalCapacity
 {
     type = double, min = 0.00, max = 999999, default = 46080,
-    page = FoodGames, translation = FoodGames_MaxMetalCapacity,
+    page = FoodGames, translation = FoodGames_MetalCapacity,
 }
 
 option FoodGames.MetalSkillCost1
@@ -116,10 +116,10 @@ option FoodGames.MetalSkillRadius1
     page = FoodGames, translation = FoodGames_MetalSkillRadius1,
 }
 
-option FoodGames.MaxMetalHitCount1
+option FoodGames.MetalHitCount1
 {
     type = integer, min = 0, max = 100, default = 1,
-    page = FoodGames, translation = FoodGames_MaxMetalHitCount1,
+    page = FoodGames, translation = FoodGames_MetalHitCount1,
 }
 
 option FoodGames.MetalSkillCost2
@@ -155,16 +155,10 @@ option FoodGames.MetalMaxHitCount2
 
 
 
-option FoodGames.CardValues
-{
-    type = string, default = Base.CardDeck:54;Base.TarotCardDeck:78;Base.BusinessCard_Personal:1;Base.BusinessCard:1;Base.BusinessCard_Nolans:1,
-    page = FoodGames, translation = FoodGames_CardValues,
-}
-
-option FoodGames.MaxCardsQty
+option FoodGames.CardsCapacity
 {
     type = double, min = 0.00, max = 999999, default = 46080,
-    page = FoodGames, translation = FoodGames_MaxCardsQty,
+    page = FoodGames, translation = FoodGames_CardsCapacity,
 }
 
 

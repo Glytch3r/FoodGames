@@ -213,9 +213,9 @@ end
 function FoodGames.getMaxEnergy(mode)
     mode = mode or FoodGames.getMode()
     if mode == "GameBet" then
-        return SandboxVars.FoodGames.MaxCardsQty or 0        
+        return SandboxVars.FoodGames.CardsCapacity or 0        
     elseif mode == "MagKneeToe" then
-        return SandboxVars.FoodGames.MaxMetalCapacity or 0
+        return SandboxVars.FoodGames.MetalCapacity or 0
     else
         return SandboxVars.FoodGames.DailyMaxCalories or 0
     end
